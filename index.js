@@ -2,57 +2,50 @@
 
 var Service, Characteristic;
 
-module.exports = function(homebridge) {
-  Service = homebridge.hap.Service;
-  Characteristic = homebridge.hap.Characteristic;
-  
-  homebridge.registerPlatform("homebridge-netatmo", "netatmo", NetatmoPlatform);
-}
-
-var DEFAULT_CACHE_TTL = 10; // 10 seconds caching - use config["ttl"] to override
-
 // CUSTOM SERVICE AND CHARACTERISTIC IDS
 var ATMOSPHERIC_PRESSURE_STYPE_ID = "B77831FD-D66A-46A4-B66D-FD7EE8DFE3CE";
 var ATMOSPHERIC_PRESSURE_CTYPE_ID = "28FDA6BC-9C2A-4DEA-AAFD-B49DB6D155AB";
 var NOISE_LEVEL_STYPE_ID = "8C85FD40-EB20-45EE-86C5-BCADC773E580";
 var NOISE_LEVEL_CTYPE_ID = "2CD7B6FD-419A-4740-8995-E3BFE43735AB";
 
-var netatmo = require("netatmo");
-var NodeCache = require("node-cache");
-var inherits = require('util').inherits;
+module.exports = function(homebridge) {
 
-Characteristic.AtmosphericPressureLevel = function() {
-  Characteristic.call(this, 'Atmospheric Pressure', ATMOSPHERIC_PRESSURE_CTYPE_ID);
-  this.setProps({
-      format: Characteristic.Formats.UINT8,
-      unit: "mbar",
-      minValue: 800,
-      maxValue: 1200,
-      minStep: 1,
-      perms: [
-        Characteristic.Perms.READ,
-        Characteristic.Perms.NOTIFY
-      ]
-  });
-  this.value = this.getDefaultValue();
-};
-inherits(Characteristic.AtmosphericPressureLevel, Characteristic);
-Characteristic.NoiseLevel = function() {
-  Characteristic.call(this, 'Noise Level', NOISE_LEVEL_CTYPE_ID);
-  this.setProps({
-      format: Characteristic.Formats.UINT8,
-      unit: "dB",
-      minValue: 0,
-      maxValue: 200,
-      minStep: 1,
-      perms: [
-        Characteristic.Perms.READ,
-        Characteristic.Perms.NOTIFY
-      ]
-  });
-  this.value = this.getDefaultValue();
-};
-inherits(Characteristic.NoiseLevel, Characteristic);
+  Service = homebridge.hap.Service;
+  Characteristic = homebridge.hap.Characteristic;
+
+  Characteristic.AtmosphericPressureLevel = function() {
+    Characteristic.call(this, 'Atmospheric Pressure', ATMOSPHERIC_PRESSURE_CTYPE_ID);
+    this.setProps({
+        format: Characteristic.Formats.UINT8,
+        unit: "mbar",
+        minValue: 800,
+        maxValue: 1200,
+        minStep: 1,
+        perms: [
+          Characteristic.Perms.READ,
+          Characteristic.Perms.NOTIFY
+        ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.AtmosphericPressureLevel, Characteristic);
+
+  Characteristic.NoiseLevel = function() {
+    Characteristic.call(this, 'Noise Level', NOISE_LEVEL_CTYPE_ID);
+    this.setProps({
+        format: Characteristic.Formats.UINT8,
+        unit: "dB",
+        minValue: 0,
+        maxValue: 200,
+        minStep: 1,
+        perms: [
+          Characteristic.Perms.READ,
+          Characteristic.Perms.NOTIFY
+        ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.NoiseLevel, Characteristic);
 
 Service.AtmosphericPressureSensor = function(displayName, subtype) {
   Service.call(this, displayName, ATMOSPHERIC_PRESSURE_STYPE_ID, subtype);
@@ -83,6 +76,15 @@ Service.NoiseLevelSensor = function(displayName, subtype) {
   this.addOptionalCharacteristic(Characteristic.Name);
 };
 inherits(Service.NoiseLevelSensor, Service);
+
+  homebridge.registerPlatform("homebridge-netatmo", "netatmo", NetatmoPlatform);
+}
+
+var DEFAULT_CACHE_TTL = 10; // 10 seconds caching - use config["ttl"] to override
+
+var netatmo = require("netatmo");
+var NodeCache = require("node-cache");
+var inherits = require('util').inherits;
 
 function NetAtmoRepository(log, api, ttl) {
   this.api = api;

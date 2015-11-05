@@ -15,8 +15,8 @@ Configuration sample:
  ```
 "platforms": [
         {
-            "platform": "Netatmo",
-            "name": "Netatmo Weather",
+            "platform": "netatmo",
+            "name": "netatmo weather",
             "ttl": 5,
             "auth": {
     	        "client_id": "XXXXX Create at https://dev.netatmo.com/",
