@@ -7,6 +7,8 @@ var ATMOSPHERIC_PRESSURE_STYPE_ID = "B77831FD-D66A-46A4-B66D-FD7EE8DFE3CE";
 var ATMOSPHERIC_PRESSURE_CTYPE_ID = "28FDA6BC-9C2A-4DEA-AAFD-B49DB6D155AB";
 var NOISE_LEVEL_STYPE_ID = "8C85FD40-EB20-45EE-86C5-BCADC773E580";
 var NOISE_LEVEL_CTYPE_ID = "2CD7B6FD-419A-4740-8995-E3BFE43735AB";
+var RAIN_LEVEL_STYPE_ID = "D92D5391-92AF-4824-AF4A-356F25F25EA1";
+var RAIN_LEVEL_CTYPE_ID = "C53F35CE-C615-4AA4-9112-EBF679C5EB14";
 
 module.exports = function(homebridge) {
 
@@ -47,35 +49,64 @@ module.exports = function(homebridge) {
   };
   inherits(Characteristic.NoiseLevel, Characteristic);
 
-Service.AtmosphericPressureSensor = function(displayName, subtype) {
-  Service.call(this, displayName, ATMOSPHERIC_PRESSURE_STYPE_ID, subtype);
+  Characteristic.RainLevel = function() {
+    Characteristic.call(this, 'Rain Level', RAIN_LEVEL_CTYPE_ID);
+    this.setProps({
+        format: Characteristic.Formats.FLOAT,
+        unit: "mm",
+        minValue: 0,
+        maxValue: 1000,
+        minStep: 0.001,
+        perms: [
+          Characteristic.Perms.READ,
+          Characteristic.Perms.NOTIFY
+        ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.RainLevel, Characteristic);
 
-  // Required Characteristics
-  this.addCharacteristic(Characteristic.AtmosphericPressureLevel);
+  Service.AtmosphericPressureSensor = function(displayName, subtype) {
+    Service.call(this, displayName, ATMOSPHERIC_PRESSURE_STYPE_ID, subtype);
 
-  // Optional Characteristics
-  this.addOptionalCharacteristic(Characteristic.StatusActive);
-  this.addOptionalCharacteristic(Characteristic.StatusFault);
-  this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
-  this.addOptionalCharacteristic(Characteristic.StatusTampered);
-  this.addOptionalCharacteristic(Characteristic.Name);
-};
-inherits(Service.AtmosphericPressureSensor, Service);
+    // Required Characteristics
+    this.addCharacteristic(Characteristic.AtmosphericPressureLevel);
 
-Service.NoiseLevelSensor = function(displayName, subtype) {
-  Service.call(this, displayName, NOISE_LEVEL_STYPE_ID, subtype);
+    // Optional Characteristics
+    this.addOptionalCharacteristic(Characteristic.StatusActive);
+    this.addOptionalCharacteristic(Characteristic.StatusFault);
+    this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
+    this.addOptionalCharacteristic(Characteristic.StatusTampered);
+    this.addOptionalCharacteristic(Characteristic.Name);
+  };
+  inherits(Service.AtmosphericPressureSensor, Service);
 
-  // Required Characteristics
-  this.addCharacteristic(Characteristic.NoiseLevel);
+  Service.NoiseLevelSensor = function(displayName, subtype) {
+    Service.call(this, displayName, NOISE_LEVEL_STYPE_ID, subtype);
 
-  // Optional Characteristics
-  this.addOptionalCharacteristic(Characteristic.StatusActive);
-  this.addOptionalCharacteristic(Characteristic.StatusFault);
-  this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
-  this.addOptionalCharacteristic(Characteristic.StatusTampered);
-  this.addOptionalCharacteristic(Characteristic.Name);
-};
-inherits(Service.NoiseLevelSensor, Service);
+    // Required Characteristics
+    this.addCharacteristic(Characteristic.NoiseLevel);
+
+    // Optional Characteristics
+    this.addOptionalCharacteristic(Characteristic.StatusActive);
+    this.addOptionalCharacteristic(Characteristic.StatusFault);
+    this.addOptionalCharacteristic(Characteristic.StatusLowBattery);
+    this.addOptionalCharacteristic(Characteristic.StatusTampered);
+    this.addOptionalCharacteristic(Characteristic.Name);
+  };
+  inherits(Service.NoiseLevelSensor, Service);
+
+  Service.RainLevelSensor = function(displayName, subtype) {
+    Service.call(this, displayName, RAIN_LEVEL_STYPE_ID, subtype);
+
+    // Required Characteristics
+    this.addCharacteristic(Characteristic.RainLevel);
+
+    // Optional Characteristics
+    this.addOptionalCharacteristic(Characteristic.Name);
+
+  };
+  inherits(Service.RainLevelSensor, Service);
 
   homebridge.registerPlatform("homebridge-netatmo", "netatmo", NetatmoPlatform);
 }
@@ -266,6 +297,12 @@ NetatmoAccessory.prototype = {
     }.bind(this));
   },
 
+  rainLevel: function(callback) {
+    this.getData(function(deviceData) {
+      callback(null, deviceData.dashboard_data.Rain);
+    }.bind(this));
+  },
+
   getServices: function() {
     var that = this;
     var services = [];
@@ -348,6 +385,15 @@ NetatmoAccessory.prototype = {
       services.push( noiseLevelSensor );
       noiseLevelSensor.getCharacteristic(Characteristic.NoiseLevel)
         .on('get', this.noiseLevel.bind(this));
+    } 
+
+    // RAIN LEVEL //////////////////////////////////////////////////////////////
+
+    if (this.serviceTypes.indexOf("Rain") > -1) {
+      var rainLevelSensor = new Service.RainLevelSensor(this.name + " Rain Level");
+      services.push( rainLevelSensor );
+      rainLevelSensor.getCharacteristic(Characteristic.RainLevel)
+        .on('get', this.rainLevel.bind(this));
     } 
 
     // TODO: Check Elgato Eve Characteristics (map min, max, time series, etc.)!
