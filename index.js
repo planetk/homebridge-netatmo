@@ -5,10 +5,20 @@ var Service, Characteristic;
 // CUSTOM SERVICE AND CHARACTERISTIC IDS
 var ATMOSPHERIC_PRESSURE_STYPE_ID = "B77831FD-D66A-46A4-B66D-FD7EE8DFE3CE";
 var ATMOSPHERIC_PRESSURE_CTYPE_ID = "28FDA6BC-9C2A-4DEA-AAFD-B49DB6D155AB";
+
 var NOISE_LEVEL_STYPE_ID = "8C85FD40-EB20-45EE-86C5-BCADC773E580";
 var NOISE_LEVEL_CTYPE_ID = "2CD7B6FD-419A-4740-8995-E3BFE43735AB";
+
 var RAIN_LEVEL_STYPE_ID = "D92D5391-92AF-4824-AF4A-356F25F25EA1";
 var RAIN_LEVEL_CTYPE_ID = "C53F35CE-C615-4AA4-9112-EBF679C5EB14";
+var RAIN_LEVEL_SUM_1H_CTYPE_ID = "11646117-878C-456B-A770-3924151F773D";
+var RAIN_LEVEL_SUM_24H_CTYPE_ID = "E67DDC66-BEB7-4D0C-BD0C-022DB570DABC";
+
+var WIND_MEASURE_STYPE_ID = "2AFB775E-79E5-4399-B3CD-398474CAE86C";
+var WIND_STRENGTH_CTYPE_ID = "9331096F-E49E-4D98-B57B-57803498FA36";
+var WIND_ANGLE_CTYPE_ID = "6C3F6DFA-7340-4ED4-AFFD-0E0310ECCD9E";
+var GUST_STRENGTH_CTYPE_ID = "1B7F2F7B-EABF-4A54-8F9D-ABBEE08E8A64";
+var GUST_ANGLE_CTYPE_ID = "928BD7DE-1CAA-4472-BBEF-0A9166B7949F";
 
 module.exports = function(homebridge) {
 
@@ -66,6 +76,108 @@ module.exports = function(homebridge) {
   };
   inherits(Characteristic.RainLevel, Characteristic);
 
+  Characteristic.RainLevelSum1 = function() {
+    Characteristic.call(this, 'Rain Level (1 hour)', RAIN_LEVEL_SUM_1H_CTYPE_ID);
+    this.setProps({
+        format: Characteristic.Formats.FLOAT,
+        unit: "mm",
+        minValue: 0,
+        maxValue: 1000,
+        minStep: 0.001,
+        perms: [
+          Characteristic.Perms.READ,
+          Characteristic.Perms.NOTIFY
+        ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.RainLevelSum1, Characteristic);
+
+  Characteristic.RainLevelSum24 = function() {
+    Characteristic.call(this, 'Rain Level (24 hours)', RAIN_LEVEL_SUM_24H_CTYPE_ID);
+    this.setProps({
+        format: Characteristic.Formats.FLOAT,
+        unit: "mm",
+        minValue: 0,
+        maxValue: 1000,
+        minStep: 0.001,
+        perms: [
+          Characteristic.Perms.READ,
+          Characteristic.Perms.NOTIFY
+        ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.RainLevelSum24, Characteristic);
+
+  Characteristic.WindStrength = function() {
+    Characteristic.call(this, 'Wind Strength', WIND_STRENGTH_CTYPE_ID);
+    this.setProps({
+        format: Characteristic.Formats.UINT8,
+        unit: "km/h",
+        minValue: 0,
+        maxValue: 200,
+        minStep: 1,
+        perms: [
+          Characteristic.Perms.READ,
+          Characteristic.Perms.NOTIFY
+        ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.WindStrength, Characteristic);
+
+  Characteristic.WindAngle = function() {
+    Characteristic.call(this, 'Wind Angle', WIND_ANGLE_CTYPE_ID);
+    this.setProps({
+        format: Characteristic.Formats.UINT8,
+        unit: "deg",
+        minValue: 0,
+        maxValue: 360,
+        minStep: 1,
+        perms: [
+          Characteristic.Perms.READ,
+          Characteristic.Perms.NOTIFY
+        ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.WindAngle, Characteristic);
+
+  Characteristic.GustStrength = function() {
+    Characteristic.call(this, 'Gust Strength', GUST_STRENGTH_CTYPE_ID);
+    this.setProps({
+        format: Characteristic.Formats.UINT8,
+        unit: "km/h",
+        minValue: 0,
+        maxValue: 200,
+        minStep: 1,
+        perms: [
+          Characteristic.Perms.READ,
+          Characteristic.Perms.NOTIFY
+        ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.GustStrength, Characteristic);
+
+  Characteristic.GustAngle = function() {
+    Characteristic.call(this, 'Gust Angle', GUST_ANGLE_CTYPE_ID);
+    this.setProps({
+        format: Characteristic.Formats.UINT8,
+        unit: "deg",
+        minValue: 0,
+        maxValue: 360,
+        minStep: 1,
+        perms: [
+          Characteristic.Perms.READ,
+          Characteristic.Perms.NOTIFY
+        ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.GustAngle, Characteristic);
+
   Service.AtmosphericPressureSensor = function(displayName, subtype) {
     Service.call(this, displayName, ATMOSPHERIC_PRESSURE_STYPE_ID, subtype);
 
@@ -104,9 +216,23 @@ module.exports = function(homebridge) {
 
     // Optional Characteristics
     this.addOptionalCharacteristic(Characteristic.Name);
-
+    this.addOptionalCharacteristic(Characteristic.RainLevelSum1);
+    this.addOptionalCharacteristic(Characteristic.RainLevelSum24);
   };
   inherits(Service.RainLevelSensor, Service);
+
+  Service.WindSensor = function(displayName, subtype) {
+    Service.call(this, displayName, WIND_MEASURE_STYPE_ID, subtype);
+
+    // Required Characteristics
+    this.addCharacteristic(Characteristic.WindAngle);
+    this.addCharacteristic(Characteristic.WindStrength);
+
+    // Optional Characteristics
+    this.addOptionalCharacteristic(Characteristic.GustAngle);
+    this.addOptionalCharacteristic(Characteristic.GustStrength);
+  };
+  inherits(Service.WindSensor, Service);
 
   homebridge.registerPlatform("homebridge-netatmo", "netatmo", NetatmoPlatform);
 }
@@ -303,6 +429,42 @@ NetatmoAccessory.prototype = {
     }.bind(this));
   },
 
+  rainLevelSum1: function(callback) {
+    this.getData(function(deviceData) {
+      callback(null, deviceData.dashboard_data.sum_rain_1);
+    }.bind(this));
+  },
+
+  rainLevelSum24: function(callback) {
+    this.getData(function(deviceData) {
+      callback(null, deviceData.dashboard_data.sum_rain_24);
+    }.bind(this));
+  },
+
+  windStrength: function(callback) {
+    this.getData(function(deviceData) {
+      callback(null, deviceData.dashboard_data.WindStrength);
+    }.bind(this));
+  },
+
+  windAngle: function(callback) {
+    this.getData(function(deviceData) {
+      callback(null, deviceData.dashboard_data.WindAngle);
+    }.bind(this));
+  },
+
+  gustStrength: function(callback) {
+    this.getData(function(deviceData) {
+      callback(null, deviceData.dashboard_data.GustStrength);
+    }.bind(this));
+  },
+
+  gustAngle: function(callback) {
+    this.getData(function(deviceData) {
+      callback(null, deviceData.dashboard_data.GustAngle);
+    }.bind(this));
+  },
+
   getServices: function() {
     var that = this;
     var services = [];
@@ -394,6 +556,29 @@ NetatmoAccessory.prototype = {
       services.push( rainLevelSensor );
       rainLevelSensor.getCharacteristic(Characteristic.RainLevel)
         .on('get', this.rainLevel.bind(this));
+
+      rainLevelSensor.getCharacteristic(Characteristic.RainLevelSum1)
+        .on('get', this.rainLevelSum1.bind(this));
+
+      rainLevelSensor.getCharacteristic(Characteristic.RainLevelSum24)
+        .on('get', this.rainLevelSum24.bind(this));
+
+    } 
+
+    // WIND SENSOR //////////////////////////////////////////////////////////////
+    if (this.serviceTypes.indexOf("Wind") > -1) {
+      var windSensor = new Service.WindSensor(this.name + " Wind Sensor");
+      services.push( windSensor );
+
+      windSensor.getCharacteristic(Characteristic.WindStrength)
+        .on('get', this.windStrength.bind(this));
+      windSensor.getCharacteristic(Characteristic.WindAngle)
+        .on('get', this.windAngle.bind(this));
+
+      windSensor.getCharacteristic(Characteristic.GustStrength)
+        .on('get', this.gustStrength.bind(this));
+      windSensor.getCharacteristic(Characteristic.GustAngle)
+        .on('get', this.gustAngle.bind(this));
     } 
 
     // TODO: Check Elgato Eve Characteristics (map min, max, time series, etc.)!
@@ -401,4 +586,3 @@ NetatmoAccessory.prototype = {
     return services;
   }
 };
-
