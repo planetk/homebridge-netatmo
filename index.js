@@ -292,15 +292,16 @@ NetAtmoRepository.prototype = {
 }
 
 function NetatmoPlatform(log, config) {
+  var that = this;
   this.log = log;
   var api = new netatmo(config["auth"]);
   var ttl = typeof config["ttl"] !== 'undefined' ?  config["ttl"] : DEFAULT_CACHE_TTL;
   this.repository = new NetAtmoRepository(this.log, api, ttl);
   api.on("error", function(error) {
-    this.log('ERROR - Netatmo: ' + error);
+    that.log('ERROR - Netatmo: ' + error);
   });
   api.on("warning", function(error) {
-    this.log('WARN - Netatmo: ' + error);
+    that.log('WARN - Netatmo: ' + error);
   });
 }
 
@@ -367,11 +368,8 @@ NetatmoAccessory.prototype = {
   },
 
   carbonDioxideDetected: function(callback) {
-    var that = this;
-    that.log ("getting CO2" + Characteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL);
-
     this.getData(function(deviceData) {
-      var result = (deviceData.dashboard_data.CO2 > 1000 ? Characteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL : Characteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL);      
+      var result = (deviceData.dashboard_data.CO2 > 1000 ? Characteristic.CarbonDioxideDetected.CO2_LEVELS_ABNORMAL : Characteristic.CarbonDioxideDetected.CO2_LEVELS_NORMAL);
       callback(null, result);
     }.bind(this));
   },
@@ -489,8 +487,9 @@ NetatmoAccessory.prototype = {
     if (this.serviceTypes.indexOf("Temperature") > -1) {
       var temperatureSensor = new Service.TemperatureSensor(this.name + " Temperature");
       services.push( temperatureSensor );
-      temperatureSensor.getCharacteristic(Characteristic.CurrentTemperature)
-        .on('get', this.currentTemperature.bind(this));
+       var tmpChar = temperatureSensor.getCharacteristic(Characteristic.CurrentTemperature)
+      tmpChar.setProps({ minValue: -100 });
+      tmpChar.on('get', this.currentTemperature.bind(this));
     }
 
     // HUMIDITY ////////////////////////////////////////////////////
