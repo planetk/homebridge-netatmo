@@ -268,7 +268,7 @@ NetAtmoRepository.prototype = {
         for (var module of device.modules) {
           module.module_name = device.station_name + " " + module.module_name
 
-          that.log("refreshing device " + module._id + " (" + module.module_name + ")");
+          that.log("refreshing module " + module._id + " (" + module.module_name + ")");
           datasource.modules[module._id] = module;
         }
       }
@@ -352,18 +352,29 @@ NetatmoAccessory.prototype = {
 
   currentTemperature: function (callback) {
     this.getData(function(deviceData) {
-/*
-      if (error) {
-        callback(error);
+      if (deviceData.dashboard_data != undefined) {
+        if (deviceData.dashboard_data.Temperature != undefined) {
+          callback(null, deviceData.dashboard_data.Temperature);
+        } else {
+          callback(null, null);
+        }
       } else {
-*/  
-      callback(null, deviceData.dashboard_data.Temperature);
+        callback(null, null);
+      }
     }.bind(this));
   },  
 
   currentRelativeHumidity: function(callback) {
     this.getData(function(deviceData) {
-      callback(null, deviceData.dashboard_data.Humidity);
+      if (deviceData.dashboard_data != undefined) {
+        if (deviceData.dashboard_data.Humidity != undefined) {
+          callback(null, deviceData.dashboard_data.Humidity);
+        } else {
+          callback(null, null);
+        }
+      } else {
+        callback(null, null);
+      }
     }.bind(this));
   },
 
@@ -470,7 +481,6 @@ NetatmoAccessory.prototype = {
     this.log("creating services for " + this.name)
 
     // INFORMATION ///////////////////////////////////////////////////
-
     var informationService = new Service.AccessoryInformation();
     var firmwareCharacteristic = informationService.getCharacteristic(Characteristic.FirmwareRevision)
                            || informationService.addCharacteristic(Characteristic.FirmwareRevision);
@@ -487,7 +497,8 @@ NetatmoAccessory.prototype = {
     if (this.serviceTypes.indexOf("Temperature") > -1) {
       var temperatureSensor = new Service.TemperatureSensor(this.name + " Temperature");
       services.push( temperatureSensor );
-       var tmpChar = temperatureSensor.getCharacteristic(Characteristic.CurrentTemperature)
+      
+      var tmpChar = temperatureSensor.getCharacteristic(Characteristic.CurrentTemperature)
       tmpChar.setProps({ minValue: -100 });
       tmpChar.on('get', this.currentTemperature.bind(this));
     }
@@ -499,7 +510,6 @@ NetatmoAccessory.prototype = {
       humiditySensor.getCharacteristic(Characteristic.CurrentRelativeHumidity)
         .on('get', this.currentRelativeHumidity.bind(this));
     }
-
 
     // CO2 SENSOR /////////////////////////////////////////////////
     if (this.serviceTypes.indexOf("CO2") > -1) {
@@ -520,7 +530,6 @@ NetatmoAccessory.prototype = {
     }
 
     // BATTERY SERVICE ////////////////////////////////////////////
-
     if (this.serviceTypes.indexOf("Battery") > -1) {
       var batteryService = new Service.BatteryService(this.name + " Battery Level");
       services.push( batteryService );
@@ -531,7 +540,6 @@ NetatmoAccessory.prototype = {
     }
 
     // ATMOSPHERIC PRESSURE /////////////////////////////////////////////////////
-
     if (this.serviceTypes.indexOf("Pressure") > -1) {
       var atmosphericPressureSensor = new Service.AtmosphericPressureSensor(this.name + " Atmospheric Pressure");
       services.push( atmosphericPressureSensor );
@@ -540,7 +548,6 @@ NetatmoAccessory.prototype = {
     } 
 
     // NOISE LEVEL //////////////////////////////////////////////////////////////
-
     if (this.serviceTypes.indexOf("Noise") > -1) {
       var noiseLevelSensor = new Service.NoiseLevelSensor(this.name + " Noise Level");
       services.push( noiseLevelSensor );
@@ -549,7 +556,6 @@ NetatmoAccessory.prototype = {
     } 
 
     // RAIN LEVEL //////////////////////////////////////////////////////////////
-
     if (this.serviceTypes.indexOf("Rain") > -1) {
       var rainLevelSensor = new Service.RainLevelSensor(this.name + " Rain Level");
       services.push( rainLevelSensor );
