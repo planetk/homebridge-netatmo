@@ -658,8 +658,8 @@ NetatmoThermostat.prototype = {
       if (deviceData.modules[0].setpoint.setpoint_mode === 'max') {
         this.heatingCoolingState = 1;
       }
+      callback(null, this.heatingCoolingState);
     }.bind(this));
-    callback(null, this.heatingCoolingState);
   },
   setTargetHeatingCoolingState: function(value, callback) {
     this.log("setTargetHeatingCoolingState from/to:", this.targetHeatingCoolingState, value);
@@ -678,8 +678,8 @@ NetatmoThermostat.prototype = {
   getTargetTemperature: function (callback) {
     this.log("getTargetTemperature!");
     this.getData(function (deviceData) {
-      if (deviceData.modules[0].measured.temperature != undefined) {
-        this.targetTemperature = deviceData.modules[0].measured.temperature;
+      if (deviceData.modules[0].measured.setpoint_temp != undefined) {
+        this.targetTemperature = deviceData.modules[0].measured.setpoint_temp;
       }
       callback(null, this.targetTemperature);
     }.bind(this));
