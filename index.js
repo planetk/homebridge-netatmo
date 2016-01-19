@@ -678,8 +678,8 @@ NetatmoThermostat.prototype = {
   getTargetTemperature: function (callback) {
     this.log("getTargetTemperature!");
     this.getData(function (deviceData) {
-      if (deviceData.modules[0].measured.setpoint_temp != undefined) {
-        this.targetTemperature = deviceData.modules[0].measured.setpoint_temp;
+      if (deviceData.modules[0].setpoint.setpoint_temp != undefined) {
+        this.targetTemperature = deviceData.modules[0].setpoint.setpoint_temp;
       }
       callback(null, this.targetTemperature);
     }.bind(this));
