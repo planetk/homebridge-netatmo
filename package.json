@@ -6,16 +6,16 @@
   "keywords": [
     "homebridge-plugin"
   ],
-  "repository" :
-  { "type" : "git"
-  , "url" : "https://github.com/planetk/homebridge-netatmo.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/planetk/homebridge-netatmo.git"
   },
   "engines": {
     "node": ">=0.12.0",
     "homebridge": ">=0.2.0"
   },
   "dependencies": {
-	"netatmo": "git+https://github.com/patricks/netatmo.git",
+    "netatmo": "git+https://github.com/marcuspocus/netatmo.git",
     "node-cache": "3.0.0"
   }
 }
