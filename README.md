@@ -1,6 +1,6 @@
 # homebridge-netatmo
 
-This ia a plugin for homebridge. It is a fully-working implementation of a **netatmo weather station**.
+This is a plugin for homebridge. It's a fully-working implementation of a **netatmo weather station**.
 
 > It now also include a partial implementation for the **netatmo thermostat**
 
