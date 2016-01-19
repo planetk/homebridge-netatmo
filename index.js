@@ -421,9 +421,7 @@ NetatmoAccessory.prototype = {
 
   batteryLevel: function (callback) {
     this.getData(function (deviceData) {
-      var charge = deviceData.battery_vp;
-      var level = charge < 3000 ? 0 : (charge - 3000) / 30;
-      callback(null, level);
+      callback(null, deviceData.battery_percent);
     }.bind(this));
   },
 
@@ -606,6 +604,7 @@ NetatmoAccessory.prototype = {
     return services;
   }
 };
+
 function NetatmoThermostat(log, repository, device) {
   this.log = log;
   this.repository = repository;
@@ -616,7 +615,7 @@ function NetatmoThermostat(log, repository, device) {
   this.model = device.type;
 
   this.heatingCoolingState = Characteristic.CurrentHeatingCoolingState.HEAT;
-  this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.AUTO;
+  this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.HEAT;
   this.temperature = 21;
   this.targetTemperature = 21;
   this.temperatureDisplayUnits = Characteristic.TemperatureDisplayUnits.CELSIUS;
@@ -642,7 +641,7 @@ NetatmoThermostat.prototype = {
     this.getData(function (deviceData) {
       //program, away, hg, manual, off, max
       if (deviceData.modules[0].setpoint.setpoint_mode === 'program') {
-        this.heatingCoolingState = 3;
+        this.heatingCoolingState = 1;
       }
       if (deviceData.modules[0].setpoint.setpoint_mode === 'away') {
         this.heatingCoolingState = 1;
@@ -671,29 +670,49 @@ NetatmoThermostat.prototype = {
     this.log("getCurrentTemperature!");
     this.getData(function (deviceData) {
       if (deviceData.modules[0].measured.temperature != undefined) {
-        this.targetTemperature = deviceData.modules[0].measured.temperature;
+        this.temperature = deviceData.modules[0].measured.temperature;
       }
-      callback(null, this.targetTemperature);
+      callback(null, this.temperature);
     }.bind(this));
   },
   getTargetTemperature: function (callback) {
     this.log("getTargetTemperature!");
     this.getData(function (deviceData) {
-      if (deviceData.modules[0].measured.setpoint_temp != undefined) {
-        this.targetTemperature = deviceData.modules[0].measured.setpoint_temp;
+      if (deviceData.modules[0].measured.temperature != undefined) {
+        this.targetTemperature = deviceData.modules[0].measured.temperature;
       }
       callback(null, this.targetTemperature);
-
     }.bind(this));
   },
   setTargetTemperature: function (value, callback) {
     this.log("setTargetTemperature from/to", this.targetTemperature, value);
     this.targetTemperature = value;
-    callback();
+    this.getData(function(deviceData){
+      this.repository.api.setThermpoint({
+        device_id: deviceData._id,
+        module_id: deviceData.modules[0]._id,
+        setpoint_mode: 'manual',
+        setpoint_temp: value,
+        setpoint_endtime: deviceData.modules[0].measured.time + (60*60*3)
+      },callback);
+    }.bind(this));
   },
   getTemperatureDisplayUnits: function (callback) {
     this.log("getTemperatureDisplayUnits :", this.temperatureDisplayUnits);
     callback(null, this.temperatureDisplayUnits);
+  },
+  batteryLevel: function (callback) {
+    this.getData(function (deviceData) {
+      callback(null, deviceData.modules[0].battery_percent);
+    }.bind(this));
+  },
+
+  statusLowBattery: function (callback) {
+    this.getData(function (deviceData) {
+      var charge = deviceData.modules[0].battery_vp;
+      var level = charge < 4600 ? Characteristic.StatusLowBattery.BATTERY_LEVEL_LOW : Characteristic.StatusLowBattery.BATTERY_LEVEL_NORMAL;
+      callback(null, level);
+    }.bind(this));
   },
 
   getServices: function () {
@@ -739,7 +758,15 @@ NetatmoThermostat.prototype = {
       .getCharacteristic(Characteristic.TemperatureDisplayUnits)
       .on('get', this.getTemperatureDisplayUnits.bind(this));
 
-    this.log("creating services for " + this.name + ": OK");
+    var batteryService = new Service.BatteryService(this.name);
+    services.push(batteryService);
+
+    batteryService.getCharacteristic(Characteristic.BatteryLevel)
+      .on('get', this.batteryLevel.bind(this));
+
+    batteryService.getCharacteristic(Characteristic.StatusLowBattery)
+      .on('get', this.statusLowBattery.bind(this));
+
 
     return services;
   }
