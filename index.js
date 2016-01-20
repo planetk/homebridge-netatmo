@@ -19,27 +19,49 @@ var WIND_ANGLE_CTYPE_ID = "6C3F6DFA-7340-4ED4-AFFD-0E0310ECCD9E";
 var GUST_STRENGTH_CTYPE_ID = "1B7F2F7B-EABF-4A54-8F9D-ABBEE08E8A64";
 var GUST_ANGLE_CTYPE_ID = "928BD7DE-1CAA-4472-BBEF-0A9166B7949F";
 
+var THERM_HG_CTYPE_ID = "3674CD3A-16AF-4C9D-8492-E466B753A697";
+var THERM_AWAY_CTYPE_ID = "D5806A47-948D-4707-B350-EF4637B93539";
+
 module.exports = function (homebridge) {
 
   Service = homebridge.hap.Service;
   Characteristic = homebridge.hap.Characteristic;
 
-  Characteristic.AtmosphericPressureLevel = function () {
-    Characteristic.call(this, 'Atmospheric Pressure', ATMOSPHERIC_PRESSURE_CTYPE_ID);
+  Characteristic.ThermostatAwayMode = function () {
+    Characteristic.call(this, 'Absent', THERM_AWAY_CTYPE_ID);
     this.setProps({
-      format: Characteristic.Formats.UINT8,
-      unit: "mbar",
-      minValue: 800,
-      maxValue: 1200,
-      minStep: 1,
+      format: Characteristic.Formats.BOOL,
+      unit: null,
+      minValue: null,
+      maxValue: null,
+      minStep: null,
       perms: [
         Characteristic.Perms.READ,
+        Characteristic.Perms.WRITE,
         Characteristic.Perms.NOTIFY
       ]
     });
     this.value = this.getDefaultValue();
   };
-  inherits(Characteristic.AtmosphericPressureLevel, Characteristic);
+  inherits(Characteristic.ThermostatAwayMode, Characteristic);
+
+  Characteristic.ThermostatHG = function () {
+    Characteristic.call(this, 'Hors Gel', THERM_HG_CTYPE_ID);
+    this.setProps({
+      format: Characteristic.Formats.BOOL,
+      unit: null,
+      minValue: null,
+      maxValue: null,
+      minStep: null,
+      perms: [
+        Characteristic.Perms.READ,
+        Characteristic.Perms.WRITE,
+        Characteristic.Perms.NOTIFY
+      ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.ThermostatHG, Characteristic);
 
   Characteristic.NoiseLevel = function () {
     Characteristic.call(this, 'Noise Level', NOISE_LEVEL_CTYPE_ID);
@@ -495,8 +517,8 @@ NetatmoAccessory.prototype = {
 
     // INFORMATION ///////////////////////////////////////////////////
     var informationService = new Service.AccessoryInformation();
-    var firmwareCharacteristic = informationService.getCharacteristic(Characteristic.FirmwareRevision)
-      || informationService.addCharacteristic(Characteristic.FirmwareRevision);
+    //var firmwareCharacteristic = informationService.getCharacteristic(Characteristic.FirmwareRevision)
+    //  || informationService.addCharacteristic(Characteristic.FirmwareRevision);
     services.push(informationService);
 
     informationService
@@ -614,8 +636,8 @@ function NetatmoThermostat(log, repository, device) {
   this.firmware = device.firmware;
   this.model = device.type;
 
-  this.heatingCoolingState = Characteristic.CurrentHeatingCoolingState.HEAT;
-  this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.HEAT;
+  this.awayMode = false;
+  this.hgMode = false;
   this.temperature = 21;
   this.targetTemperature = 21;
   this.temperatureDisplayUnits = Characteristic.TemperatureDisplayUnits.CELSIUS;
@@ -632,39 +654,40 @@ NetatmoThermostat.prototype = {
 
   identify: function (callback) {
     this.log("Identify requested!");
-    callback(); // success
+    callback();
   },
 
   // Required
-  getCurrentHeatingCoolingState: function(callback) {
-    this.log("getCurrentHeatingCoolingState :", this.heatingCoolingState);
+  getThermostatAwayMode: function(callback){
+    this.log("getThermostatAwayMode :", this.awayMode);
+    this.getData(function (deviceData) {
+      this.awayMode = (deviceData.modules[0].setpoint.setpoint_mode === 'away');
+      callback(null, this.awayMode);
+    }.bind(this));
+  },
+  setThermostatAwayMode: function(value, callback){
+    this.log("setThermostatAwayMode :", value);
+    this.repository.api.setThermpoint({
+      device_id: deviceData._id,
+      module_id: deviceData.modules[0]._id,
+      setpoint_mode: (value ? 'away' : 'program')
+    },callback);
+  },
+  getThermostatHgMode: function(callback){
+    this.log("getThermostatHgMode :", this.hgMode);
     this.getData(function (deviceData) {
       //program, away, hg, manual, off, max
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'program') {
-        this.heatingCoolingState = 1;
-      }
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'away') {
-        this.heatingCoolingState = 1;
-      }
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'hg') {
-        this.heatingCoolingState = 1;
-      }
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'manual') {
-        this.heatingCoolingState = 1;
-      }
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'off') {
-        this.heatingCoolingState = 0;
-      }
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'max') {
-        this.heatingCoolingState = 1;
-      }
+      this.awayMode = (deviceData.modules[0].setpoint.setpoint_mode === 'hg');
+      callback(null, this.awayMode);
     }.bind(this));
-    callback(null, this.heatingCoolingState);
   },
-  setTargetHeatingCoolingState: function(value, callback) {
-    this.log("setTargetHeatingCoolingState from/to:", this.targetHeatingCoolingState, value);
-    this.targetHeatingCoolingState = value;
-    callback();
+  setThermostatHgMode: function(value, callback){
+    this.log("setThermostatHgMode :", value);
+    this.repository.api.setThermpoint({
+      device_id: deviceData._id,
+      module_id: deviceData.modules[0]._id,
+      setpoint_mode: (value ? 'hg' : 'program')
+    },callback);
   },
   getCurrentTemperature: function (callback) {
     this.log("getCurrentTemperature!");
@@ -720,6 +743,10 @@ NetatmoThermostat.prototype = {
 
     this.log("creating services for " + this.name)
 
+    /**
+     * Information Service
+     * @type {Service.AccessoryInformation}
+     */
     var informationService = new Service.AccessoryInformation();
     services.push(informationService);
 
@@ -730,17 +757,54 @@ NetatmoThermostat.prototype = {
       .setCharacteristic(Characteristic.SerialNumber, this.serial)
       .setCharacteristic(Characteristic.FirmwareRevision, this.firmware);
 
-    var thermostatService = new Service.Thermostat(this.name);
+    /**
+     * Netatmo Thermostat Service
+     * @param displayName
+     * @param subType
+     * @constructor
+     */
+    Service.NetatmoThermostatService = function(displayName, subType){
+      Service.call(this, displayName, '5A5CE380-16ED-44FD-964A-9F3E6731D7C1', subtype);
+
+      this.addCharacteristic(Characteristic.Identify);
+      this.addCharacteristic(Characteristic.Manufacturer);
+      this.addCharacteristic(Characteristic.Model);
+      this.addCharacteristic(Characteristic.Name);
+      this.addCharacteristic(Characteristic.SerialNumber);
+      this.addCharacteristic(Characteristic.ThermostatAwayMode);
+      this.addCharacteristic(Characteristic.ThermostatHG);
+      this.addCharacteristic(Characteristic.CurrentTemperature);
+      this.addCharacteristic(Characteristic.TargetTemperature);
+      this.addCharacteristic(Characteristic.TemperatureDisplayUnits);
+
+      // Optional Characteristics
+      this.addOptionalCharacteristic(Characteristic.Name);
+
+    };
+    inherits(Service.NetatmoThermostatService, Service);
+
+    /**
+     *
+     * @type {Service.NetatmoThermostatService}
+     */
+    var thermostatService = new Service.NetatmoThermostatService(this.name);
     services.push(thermostatService);
 
-    // Required Characteristics
     thermostatService
-      .getCharacteristic(Characteristic.CurrentHeatingCoolingState)
-      .on('get', this.getCurrentHeatingCoolingState.bind(this));
+      .getCharacteristic(Characteristic.ThermostatAwayMode)
+      .on('get', this.getThermostatAwayMode.bind(this));
 
     thermostatService
-      .getCharacteristic(Characteristic.TargetHeatingCoolingState)
-      .on('set', this.setTargetHeatingCoolingState.bind(this));
+      .getCharacteristic(Characteristic.ThermostatAwayMode)
+      .on('set', this.setThermostatAwayMode.bind(this));
+
+    thermostatService
+      .getCharacteristic(Characteristic.ThermostatHG)
+      .on('get', this.getThermostatHgMode.bind(this));
+
+    thermostatService
+      .getCharacteristic(Characteristic.ThermostatHG)
+      .on('set', this.setThermostatHgMode.bind(this));
 
     thermostatService
       .getCharacteristic(Characteristic.CurrentTemperature)
@@ -758,7 +822,20 @@ NetatmoThermostat.prototype = {
       .getCharacteristic(Characteristic.TemperatureDisplayUnits)
       .on('get', this.getTemperatureDisplayUnits.bind(this));
 
-    var batteryService = new Service.BatteryService(this.name);
+    // Battery Service
+    Service.NonChargeableBatteryService = function(displayName, subtype) {
+      Service.call(this, displayName, '633B396D-26DC-4FD9-8FD4-EF9DEBDE7BD6', subtype);
+
+      // Required Characteristics
+      this.addCharacteristic(Characteristic.BatteryLevel);
+      this.addCharacteristic(Characteristic.StatusLowBattery);
+
+      // Optional Characteristics
+      this.addOptionalCharacteristic(Characteristic.Name);
+    };
+    inherits(Service.NonChargeableBatteryServiceBatteryService, Service);
+
+    var batteryService = new Service.NonChargeableBatteryService(this.name);
     services.push(batteryService);
 
     batteryService.getCharacteristic(Characteristic.BatteryLevel)
