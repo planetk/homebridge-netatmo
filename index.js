@@ -63,6 +63,23 @@ module.exports = function (homebridge) {
   };
   inherits(Characteristic.ThermostatHG, Characteristic);
 
+  Characteristic.AtmosphericPressureLevel = function () {
+    Characteristic.call(this, 'Atmospheric Pressure', ATMOSPHERIC_PRESSURE_CTYPE_ID);
+    this.setProps({
+      format: Characteristic.Formats.UINT8,
+      unit: "mbar",
+      minValue: 800,
+      maxValue: 1200,
+      minStep: 1,
+      perms: [
+        Characteristic.Perms.READ,
+        Characteristic.Perms.NOTIFY
+      ]
+    });
+    this.value = this.getDefaultValue();
+  };
+  inherits(Characteristic.AtmosphericPressureLevel, Characteristic);
+
   Characteristic.NoiseLevel = function () {
     Characteristic.call(this, 'Noise Level', NOISE_LEVEL_CTYPE_ID);
     this.setProps({
@@ -677,8 +694,24 @@ NetatmoThermostat.prototype = {
     this.log("getThermostatHgMode :", this.hgMode);
     this.getData(function (deviceData) {
       //program, away, hg, manual, off, max
-      this.awayMode = (deviceData.modules[0].setpoint.setpoint_mode === 'hg');
-      callback(null, this.awayMode);
+      if (deviceData.modules[0].setpoint.setpoint_mode === 'program') {
+        this.heatingCoolingState = 1;
+      }
+      if (deviceData.modules[0].setpoint.setpoint_mode === 'away') {
+        this.heatingCoolingState = 1;
+      }
+      if (deviceData.modules[0].setpoint.setpoint_mode === 'hg') {
+        this.heatingCoolingState = 1;
+      }
+      if (deviceData.modules[0].setpoint.setpoint_mode === 'manual') {
+        this.heatingCoolingState = 1;
+      }
+      if (deviceData.modules[0].setpoint.setpoint_mode === 'off') {
+        this.heatingCoolingState = 0;
+      }
+      if (deviceData.modules[0].setpoint.setpoint_mode === 'max') {
+        this.heatingCoolingState = 1;
+      }
     }.bind(this));
   },
   setThermostatHgMode: function(value, callback){
@@ -701,8 +734,8 @@ NetatmoThermostat.prototype = {
   getTargetTemperature: function (callback) {
     this.log("getTargetTemperature!");
     this.getData(function (deviceData) {
-      if (deviceData.modules[0].measured.temperature != undefined) {
-        this.targetTemperature = deviceData.modules[0].measured.temperature;
+      if (deviceData.modules[0].setpoint.setpoint_temp != undefined) {
+        this.targetTemperature = deviceData.modules[0].setpoint.setpoint_temp;
       }
       callback(null, this.targetTemperature);
     }.bind(this));
@@ -764,21 +797,17 @@ NetatmoThermostat.prototype = {
      * @constructor
      */
     Service.NetatmoThermostatService = function(displayName, subType){
-      Service.call(this, displayName, '5A5CE380-16ED-44FD-964A-9F3E6731D7C1', subtype);
+      Service.call(this, displayName, '43EB2466-3B98-457E-9EE9-BD6E735E6CBF', subType);
 
       this.addCharacteristic(Characteristic.Identify);
       this.addCharacteristic(Characteristic.Manufacturer);
       this.addCharacteristic(Characteristic.Model);
-      this.addCharacteristic(Characteristic.Name);
       this.addCharacteristic(Characteristic.SerialNumber);
       this.addCharacteristic(Characteristic.ThermostatAwayMode);
       this.addCharacteristic(Characteristic.ThermostatHG);
       this.addCharacteristic(Characteristic.CurrentTemperature);
       this.addCharacteristic(Characteristic.TargetTemperature);
       this.addCharacteristic(Characteristic.TemperatureDisplayUnits);
-
-      // Optional Characteristics
-      this.addOptionalCharacteristic(Characteristic.Name);
 
     };
     inherits(Service.NetatmoThermostatService, Service);
@@ -823,8 +852,8 @@ NetatmoThermostat.prototype = {
       .on('get', this.getTemperatureDisplayUnits.bind(this));
 
     // Battery Service
-    Service.NonChargeableBatteryService = function(displayName, subtype) {
-      Service.call(this, displayName, '633B396D-26DC-4FD9-8FD4-EF9DEBDE7BD6', subtype);
+    Service.NonChargeableBatteryService = function(displayName, subType) {
+      Service.call(this, displayName, '633B396D-26DC-4FD9-8FD4-EF9DEBDE7BD6', subType);
 
       // Required Characteristics
       this.addCharacteristic(Characteristic.BatteryLevel);
@@ -833,7 +862,7 @@ NetatmoThermostat.prototype = {
       // Optional Characteristics
       this.addOptionalCharacteristic(Characteristic.Name);
     };
-    inherits(Service.NonChargeableBatteryServiceBatteryService, Service);
+    inherits(Service.NonChargeableBatteryService, Service);
 
     var batteryService = new Service.NonChargeableBatteryService(this.name);
     services.push(batteryService);
