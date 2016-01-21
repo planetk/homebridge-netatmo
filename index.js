@@ -21,6 +21,8 @@ var GUST_ANGLE_CTYPE_ID = "928BD7DE-1CAA-4472-BBEF-0A9166B7949F";
 
 var THERM_HG_CTYPE_ID = "3674CD3A-16AF-4C9D-8492-E466B753A697";
 var THERM_AWAY_CTYPE_ID = "D5806A47-948D-4707-B350-EF4637B93539";
+//var THERMOSTAT_STYPE_ID = "43EB2466-3B98-457E-9EE9-BD6E735E6CBF";
+var THERMOSTAT_STYPE_ID = "0000004A-0000-1000-8000-0026BB765291"; // Original
 
 module.exports = function (homebridge) {
 
@@ -28,7 +30,7 @@ module.exports = function (homebridge) {
   Characteristic = homebridge.hap.Characteristic;
 
   Characteristic.ThermostatAwayMode = function () {
-    Characteristic.call(this, 'Absent', THERM_AWAY_CTYPE_ID);
+    Characteristic.call(this, 'Mode Absent', THERM_AWAY_CTYPE_ID);
     this.setProps({
       format: Characteristic.Formats.BOOL,
       unit: null,
@@ -46,7 +48,7 @@ module.exports = function (homebridge) {
   inherits(Characteristic.ThermostatAwayMode, Characteristic);
 
   Characteristic.ThermostatHG = function () {
-    Characteristic.call(this, 'Hors Gel', THERM_HG_CTYPE_ID);
+    Characteristic.call(this, 'Mode Hors Gel', THERM_HG_CTYPE_ID);
     this.setProps({
       format: Characteristic.Formats.BOOL,
       unit: null,
@@ -64,7 +66,7 @@ module.exports = function (homebridge) {
   inherits(Characteristic.ThermostatHG, Characteristic);
 
   Characteristic.AtmosphericPressureLevel = function () {
-    Characteristic.call(this, 'Atmospheric Pressure', ATMOSPHERIC_PRESSURE_CTYPE_ID);
+    Characteristic.call(this, 'Pression Atmospherique', ATMOSPHERIC_PRESSURE_CTYPE_ID);
     this.setProps({
       format: Characteristic.Formats.UINT8,
       unit: "mbar",
@@ -81,7 +83,7 @@ module.exports = function (homebridge) {
   inherits(Characteristic.AtmosphericPressureLevel, Characteristic);
 
   Characteristic.NoiseLevel = function () {
-    Characteristic.call(this, 'Noise Level', NOISE_LEVEL_CTYPE_ID);
+    Characteristic.call(this, 'Niveau de bruit', NOISE_LEVEL_CTYPE_ID);
     this.setProps({
       format: Characteristic.Formats.UINT8,
       unit: "dB",
@@ -675,52 +677,39 @@ NetatmoThermostat.prototype = {
   },
 
   // Required
-  getThermostatAwayMode: function(callback){
+  getThermostatAwayMode: function (callback) {
     this.log("getThermostatAwayMode :", this.awayMode);
     this.getData(function (deviceData) {
       this.awayMode = (deviceData.modules[0].setpoint.setpoint_mode === 'away');
       callback(null, this.awayMode);
     }.bind(this));
   },
-  setThermostatAwayMode: function(value, callback){
+  setThermostatAwayMode: function (value, callback) {
     this.log("setThermostatAwayMode :", value);
-    this.repository.api.setThermpoint({
-      device_id: deviceData._id,
-      module_id: deviceData.modules[0]._id,
-      setpoint_mode: (value ? 'away' : 'program')
-    },callback);
-  },
-  getThermostatHgMode: function(callback){
-    this.log("getThermostatHgMode :", this.hgMode);
     this.getData(function (deviceData) {
-      //program, away, hg, manual, off, max
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'program') {
-        this.heatingCoolingState = 1;
-      }
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'away') {
-        this.heatingCoolingState = 1;
-      }
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'hg') {
-        this.heatingCoolingState = 1;
-      }
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'manual') {
-        this.heatingCoolingState = 1;
-      }
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'off') {
-        this.heatingCoolingState = 0;
-      }
-      if (deviceData.modules[0].setpoint.setpoint_mode === 'max') {
-        this.heatingCoolingState = 1;
-      }
+      this.repository.api.setThermpoint({
+        device_id: deviceData._id,
+        module_id: deviceData.modules[0]._id,
+        setpoint_mode: (value ? 'away' : 'program')
+      }, callback);
     }.bind(this));
   },
-  setThermostatHgMode: function(value, callback){
-    this.log("setThermostatHgMode :", value);
-    this.repository.api.setThermpoint({
-      device_id: deviceData._id,
-      module_id: deviceData.modules[0]._id,
-      setpoint_mode: (value ? 'hg' : 'program')
-    },callback);
+  getThermostatHgMode: function (callback) {
+    this.log("getThermostatHgMode :", this.hgMode);
+    this.getData(function (deviceData) {
+      this.awayMode = (deviceData.modules[0].setpoint.setpoint_mode === 'hg');
+      callback(null, this.awayMode);
+    }.bind(this));
+  },
+  setThermostatHgMode: function (value, callback) {
+    this.log("setThermostatHgMode :", value)
+    this.getData(function (deviceDate) {
+      this.repository.api.setThermpoint({
+        device_id: deviceData._id,
+        module_id: deviceData.modules[0]._id,
+        setpoint_mode: (value ? 'hg' : 'program')
+      }, callback);
+    }.bind(this));
   },
   getCurrentTemperature: function (callback) {
     this.log("getCurrentTemperature!");
@@ -743,14 +732,14 @@ NetatmoThermostat.prototype = {
   setTargetTemperature: function (value, callback) {
     this.log("setTargetTemperature from/to", this.targetTemperature, value);
     this.targetTemperature = value;
-    this.getData(function(deviceData){
+    this.getData(function (deviceData) {
       this.repository.api.setThermpoint({
         device_id: deviceData._id,
         module_id: deviceData.modules[0]._id,
         setpoint_mode: 'manual',
         setpoint_temp: value,
-        setpoint_endtime: deviceData.modules[0].measured.time + (60*60*3)
-      },callback);
+        setpoint_endtime: deviceData.modules[0].measured.time + (60 * 60 * 3)
+      }, callback);
     }.bind(this));
   },
   getTemperatureDisplayUnits: function (callback) {
@@ -796,19 +785,20 @@ NetatmoThermostat.prototype = {
      * @param subType
      * @constructor
      */
-    Service.NetatmoThermostatService = function(displayName, subType){
-      Service.call(this, displayName, '43EB2466-3B98-457E-9EE9-BD6E735E6CBF', subType);
+    Service.NetatmoThermostatService = function (displayName, subtype) {
+      Service.call(this, displayName, THERMOSTAT_STYPE_ID, subtype);
 
-      this.addCharacteristic(Characteristic.Identify);
-      this.addCharacteristic(Characteristic.Manufacturer);
-      this.addCharacteristic(Characteristic.Model);
-      this.addCharacteristic(Characteristic.SerialNumber);
+      // Required Characteristics
       this.addCharacteristic(Characteristic.ThermostatAwayMode);
       this.addCharacteristic(Characteristic.ThermostatHG);
       this.addCharacteristic(Characteristic.CurrentTemperature);
       this.addCharacteristic(Characteristic.TargetTemperature);
       this.addCharacteristic(Characteristic.TemperatureDisplayUnits);
+      this.addCharacteristic(Characteristic.BatteryLevel);
+      this.addCharacteristic(Characteristic.StatusLowBattery);
 
+      // Optional Characteristics
+      this.addOptionalCharacteristic(Characteristic.Name);
     };
     inherits(Service.NetatmoThermostatService, Service);
 
@@ -851,26 +841,10 @@ NetatmoThermostat.prototype = {
       .getCharacteristic(Characteristic.TemperatureDisplayUnits)
       .on('get', this.getTemperatureDisplayUnits.bind(this));
 
-    // Battery Service
-    Service.NonChargeableBatteryService = function(displayName, subType) {
-      Service.call(this, displayName, '633B396D-26DC-4FD9-8FD4-EF9DEBDE7BD6', subType);
-
-      // Required Characteristics
-      this.addCharacteristic(Characteristic.BatteryLevel);
-      this.addCharacteristic(Characteristic.StatusLowBattery);
-
-      // Optional Characteristics
-      this.addOptionalCharacteristic(Characteristic.Name);
-    };
-    inherits(Service.NonChargeableBatteryService, Service);
-
-    var batteryService = new Service.NonChargeableBatteryService(this.name);
-    services.push(batteryService);
-
-    batteryService.getCharacteristic(Characteristic.BatteryLevel)
+    thermostatService.getCharacteristic(Characteristic.BatteryLevel)
       .on('get', this.batteryLevel.bind(this));
 
-    batteryService.getCharacteristic(Characteristic.StatusLowBattery)
+    thermostatService.getCharacteristic(Characteristic.StatusLowBattery)
       .on('get', this.statusLowBattery.bind(this));
 
 
