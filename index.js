@@ -19,7 +19,6 @@ var WIND_ANGLE_CTYPE_ID = "6C3F6DFA-7340-4ED4-AFFD-0E0310ECCD9E";
 var GUST_STRENGTH_CTYPE_ID = "1B7F2F7B-EABF-4A54-8F9D-ABBEE08E8A64";
 var GUST_ANGLE_CTYPE_ID = "928BD7DE-1CAA-4472-BBEF-0A9166B7949F";
 
-var THERM_MODE_CTYPE_ID = "9A4CED8B-175E-478D-9737-5F399876EDC6";
 var THERM_HG_CTYPE_ID = "3674CD3A-16AF-4C9D-8492-E466B753A697";
 var THERM_AWAY_CTYPE_ID = "D5806A47-948D-4707-B350-EF4637B93539";
 var THERMOSTAT_STYPE_ID = "43EB2466-3B98-457E-9EE9-BD6E735E6CBF";
@@ -46,23 +45,6 @@ module.exports = function (homebridge) {
     this.value = this.getDefaultValue();
   };
   inherits(Characteristic.ThermostatAwayMode, Characteristic);
-
-  Characteristic.ThermostatMode = function () {
-    Characteristic.call(this, 'Affichage mode', THERM_MODE_CTYPE_ID);
-    this.setProps({
-      format: Characteristic.Formats.STRING,
-      unit: null,
-      minValue: null,
-      maxValue: null,
-      minStep: null,
-      perms: [
-        Characteristic.Perms.READ,
-        Characteristic.Perms.NOTIFY
-      ]
-    });
-    this.value = this.getDefaultValue();
-  };
-  inherits(Characteristic.ThermostatMode, Characteristic);
 
   Characteristic.ThermostatHgMode = function () {
     Characteristic.call(this, 'Mode Hors Gel', THERM_HG_CTYPE_ID);
@@ -705,6 +687,9 @@ NetatmoThermostat.prototype = {
         case 'aways':
           this.mode = 'Absent';
           break;
+        case 'manual':
+          this.mode = 'Manuel';
+          break;
         case 'hg':
           this.mode = 'Hors-Gel';
           break;
@@ -832,7 +817,6 @@ NetatmoThermostat.prototype = {
       Service.call(this, displayName, THERMOSTAT_STYPE_ID, subtype);
 
       // Required Characteristics
-      this.addCharacteristic(Characteristic.ThermostatMode);
       this.addCharacteristic(Characteristic.ThermostatAwayMode);
       this.addCharacteristic(Characteristic.ThermostatHgMode);
       this.addCharacteristic(Characteristic.CurrentTemperature);
@@ -852,10 +836,6 @@ NetatmoThermostat.prototype = {
      */
     var thermostatService = new Service.NetatmoThermostatService(this.name);
     services.push(thermostatService);
-
-    thermostatService
-      .getCharacteristic(Characteristic.ThermostatMode)
-      .on('get', this.getThermostatMode.bind(this));
 
     thermostatService
       .getCharacteristic(Characteristic.ThermostatAwayMode)
