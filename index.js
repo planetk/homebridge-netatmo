@@ -217,6 +217,12 @@ module.exports = function (homebridge) {
   };
   inherits(Characteristic.GustAngle, Characteristic);
 
+  /**
+   *
+   * @param displayName
+   * @param subtype
+   * @constructor
+   */
   Service.AtmosphericPressureSensor = function (displayName, subtype) {
     Service.call(this, displayName, ATMOSPHERIC_PRESSURE_STYPE_ID, subtype);
 
@@ -232,6 +238,12 @@ module.exports = function (homebridge) {
   };
   inherits(Service.AtmosphericPressureSensor, Service);
 
+  /**
+   *
+   * @param displayName
+   * @param subtype
+   * @constructor
+   */
   Service.NoiseLevelSensor = function (displayName, subtype) {
     Service.call(this, displayName, NOISE_LEVEL_STYPE_ID, subtype);
 
@@ -247,6 +259,12 @@ module.exports = function (homebridge) {
   };
   inherits(Service.NoiseLevelSensor, Service);
 
+  /**
+   *
+   * @param displayName
+   * @param subtype
+   * @constructor
+   */
   Service.RainLevelSensor = function (displayName, subtype) {
     Service.call(this, displayName, RAIN_LEVEL_STYPE_ID, subtype);
 
@@ -260,6 +278,12 @@ module.exports = function (homebridge) {
   };
   inherits(Service.RainLevelSensor, Service);
 
+  /**
+   *
+   * @param displayName
+   * @param subtype
+   * @constructor
+   */
   Service.WindSensor = function (displayName, subtype) {
     Service.call(this, displayName, WIND_MEASURE_STYPE_ID, subtype);
 
@@ -282,11 +306,19 @@ var netatmo = require("netatmo");
 var NodeCache = require("node-cache");
 var inherits = require('util').inherits;
 
+/**
+ *
+ * @param log
+ * @param api
+ * @param ttl
+ * @constructor
+ */
 function NetAtmoRepository(log, api, ttl) {
   this.api = api;
   this.log = log;
   this.cache = new NodeCache({stdTTL: ttl});
 }
+
 
 NetAtmoRepository.prototype = {
   refresh: function (callback) {
@@ -342,6 +374,12 @@ NetAtmoRepository.prototype = {
   }
 }
 
+/**
+ *
+ * @param log
+ * @param config
+ * @constructor
+ */
 function NetatmoPlatform(log, config) {
   var that = this;
   this.log = log;
@@ -378,6 +416,13 @@ NetatmoPlatform.prototype = {
   }
 }
 
+/**
+ *
+ * @param log
+ * @param repository
+ * @param device
+ * @constructor
+ */
 function NetatmoAccessory(log, repository, device) {
   this.log = log;
   this.repository = repository;
@@ -391,6 +436,7 @@ function NetatmoAccessory(log, repository, device) {
     this.serviceTypes.push("Battery");
   }
 }
+
 NetatmoAccessory.prototype = {
 
   getData: function (callback) {
@@ -645,6 +691,13 @@ NetatmoAccessory.prototype = {
   }
 };
 
+/**
+ *
+ * @param log
+ * @param repository
+ * @param device
+ * @constructor
+ */
 function NetatmoThermostat(log, repository, device) {
   this.log = log;
   this.repository = repository;
@@ -654,13 +707,13 @@ function NetatmoThermostat(log, repository, device) {
   this.firmware = device.firmware;
   this.model = device.type;
 
-  this.mode = 'Programme';
   this.awayMode = false;
   this.hgMode = false;
   this.temperature = 21;
   this.targetTemperature = 21;
   this.temperatureDisplayUnits = Characteristic.TemperatureDisplayUnits.CELSIUS;
 }
+
 NetatmoThermostat.prototype = {
 
   getData: function (callback) {
@@ -677,32 +730,6 @@ NetatmoThermostat.prototype = {
   },
 
   // Required
-  getThermostatMode: function (callback) {
-    this.log("getThermostatMode :", this.mode);
-    this.getData(function (deviceData) {
-      switch (deviceData.modules[0].setpoint.setpoint_mode) {
-        case 'program':
-          this.mode = 'Programme';
-          break;
-        case 'aways':
-          this.mode = 'Absent';
-          break;
-        case 'manual':
-          this.mode = 'Manuel';
-          break;
-        case 'hg':
-          this.mode = 'Hors-Gel';
-          break;
-        case 'max':
-          this.mode = 'Puissance Maximum';
-          break;
-        case 'off':
-          this.mode = 'Eteint';
-          break;
-      }
-      callback(null, this.mode);
-    }.bind(this));
-  },
   getThermostatAwayMode: function (callback) {
     this.log("getThermostatAwayMode :", this.awayMode);
     this.getData(function (deviceData) {
@@ -777,7 +804,6 @@ NetatmoThermostat.prototype = {
       callback(null, deviceData.modules[0].battery_percent);
     }.bind(this));
   },
-
   statusLowBattery: function (callback) {
     this.getData(function (deviceData) {
       var charge = deviceData.modules[0].battery_vp;
@@ -785,7 +811,6 @@ NetatmoThermostat.prototype = {
       callback(null, level);
     }.bind(this));
   },
-
   getServices: function () {
     var services = [];
 
