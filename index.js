@@ -64,7 +64,7 @@ module.exports = function (homebridge) {
   };
   inherits(Characteristic.ThermostatMode, Characteristic);
 
-  Characteristic.ThermostatHG = function () {
+  Characteristic.ThermostatHgMode = function () {
     Characteristic.call(this, 'Mode Hors Gel', THERM_HG_CTYPE_ID);
     this.setProps({
       format: Characteristic.Formats.BOOL,
@@ -80,7 +80,7 @@ module.exports = function (homebridge) {
     });
     this.value = this.getDefaultValue();
   };
-  inherits(Characteristic.ThermostatHG, Characteristic);
+  inherits(Characteristic.ThermostatHgMode, Characteristic);
 
   Characteristic.AtmosphericPressureLevel = function () {
     Characteristic.call(this, 'Pression Atmospherique', ATMOSPHERIC_PRESSURE_CTYPE_ID);
@@ -553,8 +553,8 @@ NetatmoAccessory.prototype = {
 
     // INFORMATION ///////////////////////////////////////////////////
     var informationService = new Service.AccessoryInformation();
-    //var firmwareCharacteristic = informationService.getCharacteristic(Characteristic.FirmwareRevision)
-    //  || informationService.addCharacteristic(Characteristic.FirmwareRevision);
+    var firmwareCharacteristic = informationService.getCharacteristic(Characteristic.FirmwareRevision)
+      || informationService.addCharacteristic(Characteristic.FirmwareRevision);
     services.push(informationService);
 
     informationService
@@ -672,7 +672,7 @@ function NetatmoThermostat(log, repository, device) {
   this.firmware = device.firmware;
   this.model = device.type;
 
-  this.Mode = 'Programme';
+  this.mode = 'Programme';
   this.awayMode = false;
   this.hgMode = false;
   this.temperature = 21;
@@ -698,7 +698,7 @@ NetatmoThermostat.prototype = {
   getThermostatMode: function (callback) {
     this.log("getThermostatMode :", this.mode);
     this.getData(function (deviceData) {
-      switch(deviceData.modules[0].setpoint.setpoint_mode){
+      switch (deviceData.modules[0].setpoint.setpoint_mode) {
         case 'program':
           this.mode = 'Programme';
           break;
@@ -811,6 +811,8 @@ NetatmoThermostat.prototype = {
      * @type {Service.AccessoryInformation}
      */
     var informationService = new Service.AccessoryInformation();
+    var firmwareCharacteristic = informationService.getCharacteristic(Characteristic.FirmwareRevision)
+      || informationService.addCharacteristic(Characteristic.FirmwareRevision);
     services.push(informationService);
 
     informationService
@@ -832,7 +834,7 @@ NetatmoThermostat.prototype = {
       // Required Characteristics
       this.addCharacteristic(Characteristic.ThermostatMode);
       this.addCharacteristic(Characteristic.ThermostatAwayMode);
-      this.addCharacteristic(Characteristic.ThermostatHG);
+      this.addCharacteristic(Characteristic.ThermostatHgMode);
       this.addCharacteristic(Characteristic.CurrentTemperature);
       this.addCharacteristic(Characteristic.TargetTemperature);
       this.addCharacteristic(Characteristic.TemperatureDisplayUnits);
@@ -864,11 +866,11 @@ NetatmoThermostat.prototype = {
       .on('set', this.setThermostatAwayMode.bind(this));
 
     thermostatService
-      .getCharacteristic(Characteristic.ThermostatHG)
+      .getCharacteristic(Characteristic.ThermostatHgMode)
       .on('get', this.getThermostatHgMode.bind(this));
 
     thermostatService
-      .getCharacteristic(Characteristic.ThermostatHG)
+      .getCharacteristic(Characteristic.ThermostatHgMode)
       .on('set', this.setThermostatHgMode.bind(this));
 
     thermostatService
@@ -896,5 +898,4 @@ NetatmoThermostat.prototype = {
 
     return services;
   }
-}
-;
+};
