@@ -1,6 +1,8 @@
 # homebridge-netatmo
 
-This ia a plugin for homebridge. It is a fully-working implementation of a netatmo weather station.
+This is a plugin for homebridge. It's a fully-working implementation of a **netatmo weather station**.
+
+> It now also include a partial implementation for the **netatmo thermostat**
 
 # Installation
 
@@ -16,7 +18,7 @@ Configuration sample:
 "platforms": [
         {
             "platform": "netatmo",
-            "name": "netatmo weather",
+            "name": "netatmo platform",
             "ttl": 5,
             "auth": {
     	        "client_id": "XXXXX Create at https://dev.netatmo.com/",
