@@ -1,6 +1,5 @@
 TODOs:
 
-- replace "for .. of" loops
 - test driven
 - Eve Services
 - Eve History Data
