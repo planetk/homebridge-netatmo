@@ -1,0 +1,16 @@
+TODOs:
+
+- replace "for .. of" loops
+- test driven
+- Eve Services
+- Eve History Data
+- Temperature Units (homekit)
+- Min / Max Temp
+- Battery Level ...
+- Radio Link Quality
+- Labels I18N (config)
+- SoftwareRevision -> plugin version
+- check logging (console.log)
+- log callback with error != null
+- All //TODO from sources
+- Check Warn sign with rain meter

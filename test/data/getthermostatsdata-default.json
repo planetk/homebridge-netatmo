@@ -1,0 +1,231 @@
+{
+  "body": {
+    "devices": [
+      {
+        "_id": "20:00:00:00:00:01",
+        "admin_access_code": [
+          "XXXXXXXXXXXXXX"
+        ],
+        "behavior": 512,
+        "date_setup": {
+          "sec": 1469736946,
+          "usec": 857000
+        },
+        "firmware": 68,
+        "house_model": {
+          "ca": {
+            "te": 20.9,
+            "ti": 1469736996,
+            "so": "station"
+          },
+          "link_station": {
+            "ext": "20:00:01:01:00:01",
+            "last_link_check": 1469737141,
+            "mac": "20:00:00:03:03:03"
+          }
+        },
+        "last_setup": 1469736946,
+        "last_status_store": 1469737251,
+        "last_upgrade": 1469736911,
+        "modules": [
+          {
+            "_id": "20:00:00:00:00:02",
+            "module_name": "Thermostat",
+            "type": "NATherm1",
+            "firmware": 5,
+            "last_message": 1469737251,
+            "rf_status": 43,
+            "battery_vp": 4820,
+            "therm_orientation": 3,
+            "therm_relay_cmd": 0,
+            "battery_percent": 100,
+            "last_therm_seen": 1469737251,
+            "setpoint": {
+              "setpoint_temp": 22,
+              "setpoint_endtime": 1469748038,
+              "setpoint_mode": "manual"
+            },
+            "therm_program_list": [
+              {
+                "zones": [
+                  {
+                    "type": 0,
+                    "id": 0,
+                    "temp": 19
+                  },
+                  {
+                    "type": 1,
+                    "id": 1,
+                    "temp": 17
+                  },
+                  {
+                    "type": 2,
+                    "id": 2,
+                    "temp": 12
+                  },
+                  {
+                    "type": 3,
+                    "id": 3,
+                    "temp": 7
+                  },
+                  {
+                    "type": 5,
+                    "id": 4,
+                    "temp": 16
+                  }
+                ],
+                "timetable": [
+                  {
+                    "m_offset": 0,
+                    "id": 1
+                  },
+                  {
+                    "m_offset": 420,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 480,
+                    "id": 4
+                  },
+                  {
+                    "m_offset": 1140,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 1320,
+                    "id": 1
+                  },
+                  {
+                    "m_offset": 1860,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 1920,
+                    "id": 4
+                  },
+                  {
+                    "m_offset": 2580,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 2760,
+                    "id": 1
+                  },
+                  {
+                    "m_offset": 3300,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 3360,
+                    "id": 4
+                  },
+                  {
+                    "m_offset": 4020,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 4200,
+                    "id": 1
+                  },
+                  {
+                    "m_offset": 4740,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 4800,
+                    "id": 4
+                  },
+                  {
+                    "m_offset": 5460,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 5640,
+                    "id": 1
+                  },
+                  {
+                    "m_offset": 6180,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 6240,
+                    "id": 4
+                  },
+                  {
+                    "m_offset": 6900,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 7080,
+                    "id": 1
+                  },
+                  {
+                    "m_offset": 7620,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 8520,
+                    "id": 1
+                  },
+                  {
+                    "m_offset": 9060,
+                    "id": 0
+                  },
+                  {
+                    "m_offset": 9960,
+                    "id": 1
+                  }
+                ],
+                "default": true,
+                "program_id": "579a680de6da23412d95c07e",
+                "name": "Default",
+                "selected": true
+              }
+            ],
+            "measured": {
+              "time": 1469737251,
+              "temperature": 27.9,
+              "setpoint_temp": 22
+            }
+          }
+        ],
+        "place": {
+          "city": "Bremen",
+          "country": "DE",
+          "from_ip": true,
+          "location": [
+            8.0373499643861,
+            52.876530848422
+          ],
+          "timezone": "Europe/Berlin"
+        },
+        "plug_connected_boiler": false,
+        "station_name": "Station",
+        "type": "NAPlug",
+        "udp_conn": true,
+        "wifi_status": 58,
+        "last_plug_seen": 1469737251,
+        "outdoor_temperature": {
+          "te": 20.9,
+          "ti": 1469736996,
+          "so": "station"
+        }
+      }
+    ],
+    "user": {
+      "mail": "example@spam.org",
+      "administrative": {
+        "country": "DE",
+        "reg_locale": "de-DE",
+        "lang": "de-DE",
+        "unit": 0,
+        "windunit": 0,
+        "pressureunit": 0,
+        "feel_like_algo": 0
+      }
+    }
+  },
+  "status": "ok",
+  "time_exec": 0.012228965759277,
+  "time_server": 1469737456
+}
