@@ -114,7 +114,7 @@ WeatherStationDevice.prototype.refresh = function (callback) {
       // querying for the extra modules
       var modulecount = device.modules.length;
       for (var j = 0; j < modulecount; j++) {
-        var module = modules[j];
+        var module = device.modules[j];
         module.module_name = device.station_name + " " + module.module_name
         this.log("refreshing weatherstation module " + module._id + " (" + module.module_name + ")");
         weatherstations[module._id] = module;
