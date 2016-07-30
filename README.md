@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/planetk/homebridge-netatmo.png?branch=master)](http://travis-ci.org/planetk/homebridge-netatmo)
+
 # homebridge-netatmo
 
 This is a plugin for homebridge. It's a fully-working implementation of a **netatmo weather station**.
