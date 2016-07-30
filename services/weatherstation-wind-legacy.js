@@ -115,14 +115,15 @@ module.exports = function(accessory) {
   windSensor.getCharacteristic(WindAngleCharacteristic)
     .on('get', getWindAngle);
 
+
   var gustAngleCharacteristic = windSensor.getCharacteristic(GustAngleCharacteristic)
       || windSensor.addCharacteristic(GustAngleCharacteristic);
-  gustSensor.getCharacteristic(GustAngleCharacteristic)
+  windSensor.getCharacteristic(GustAngleCharacteristic)
     .on('get', getGustAngle);
 
   var gustStrengthCharacteristic = windSensor.getCharacteristic(GustStrengthCharacteristic)
       || windSensor.addCharacteristic(GustStrengthCharacteristic);
-  gustSensor.getCharacteristic(GustStrengthCharacteristic)
+  windSensor.getCharacteristic(GustStrengthCharacteristic)
     .on('get', getGustStrength);
 
   return { Service: windSensor};
