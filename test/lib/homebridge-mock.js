@@ -1,20 +1,27 @@
 'use strict';
 
+var ServiceMock = require('./service-mock').Service;
+var CharacteristicMock = require('./characteristic-mock').Characteristic;
+require("./mock-types");
+var AccessoryMock = require('./accessory-mock').Accessory;
+var uuidMock = require('./uuid-mock');
+
 module.exports = function(context) {
   return new HombridgeMock(context);
 };
 
 function HombridgeMock(context) {
   this.context = context;
-  this.hap = {};
-  this.hap.Service = require("hap-nodejs").Service;
-  this.hap.Characteristic = require("hap-nodejs").Characteristic;
-  this.hap.Accessory = require("hap-nodejs").Accessory;
-  this.hap.uuid = require("hap-nodejs").uuid;
+  this.hap = {
+    Service: ServiceMock,
+    Characteristic: CharacteristicMock,
+    Accessory: AccessoryMock,
+    uuid: uuidMock
+  };
 }
 
 HombridgeMock.prototype.registerPlatform = function (name, title, Platform) {
-  this.name = name;
-  this.title = title;
-  this.Platform = Platform;
+  this.pluginName = name;
+  this.configName = title;
+  this.PlatformType = Platform;
 }

@@ -16,15 +16,15 @@ describe("Netatmo Plugin (index)", function() {
   describe("Homebridge Platform", function() {
 
     it('registerPlatform is called with name', function () {
-      assert.equal(homebridgeMock.name, "homebridge-netatmo");
+      assert.equal(homebridgeMock.pluginName, "homebridge-netatmo");
     });    
 
-    it('registerPlatform is called with title', function () {
-      assert.equal(homebridgeMock.title, "netatmo");
+    it('registerPlatform is called with config name', function () {
+      assert.equal(homebridgeMock.configName, "netatmo");
     });    
 
     it('Platform is existant', function () {
-      assert.ok(homebridgeMock.Platform, "Platform not defined");
+      assert.ok(homebridgeMock.PlatformType, "Platform not defined");
     });
   });
 
@@ -34,7 +34,7 @@ describe("Netatmo Plugin (index)", function() {
       it('fails with missing auth key in config', function () {
         var config = {};
         try {
-          var platform = new homebridgeMock.Platform(console.log, config);
+          var platform = new homebridgeMock.PlatformType(console.log, config);
         } catch (error) {
           assert.equal(error.message, "Authenticate 'args' not set.");
         }
@@ -44,7 +44,7 @@ describe("Netatmo Plugin (index)", function() {
     describe("Homebridge Platform", function() {
       it('succeeds with existing API Auth Info', function () {
         var config = { auth: dummyAuth};
-        var platform = new homebridgeMock.Platform(console.log, config);
+        var platform = new homebridgeMock.PlatformType(console.log, config);
         assert.ok(platform, "Could not init platform");
       });
     });
@@ -53,7 +53,8 @@ describe("Netatmo Plugin (index)", function() {
 
       it('creates accessories', function (done) {
         var config = { auth: dummyAuth};
-        var platform = new homebridgeMock.Platform(console.log, config);
+
+        var platform = new homebridgeMock.PlatformType(console.log, config);
         platform.api = require("./netatmo-api-mock")('default');
 
         platform.accessories(function(acc) {
@@ -65,7 +66,7 @@ describe("Netatmo Plugin (index)", function() {
 
       it('creates only 3 weatherstation devices in default context', function (done) {
         var config = { auth: dummyAuth, deviceTypes: ['weatherstation']};
-        var platform = new homebridgeMock.Platform(console.log, config);
+        var platform = new homebridgeMock.PlatformType(console.log, config);
         platform.api = require("./netatmo-api-mock")('default');
 
         platform.accessories(function(acc) {
