@@ -21,13 +21,13 @@ module.exports = function(accessory) {
       unit: "mm",
       minValue: 0,
       maxValue: 1000,
-      minStep: 0.1,
+      minStep: 0.001,
       perms: [
         Characteristic.Perms.READ,
         Characteristic.Perms.NOTIFY
       ]
     });
-    this.value = this.getDefaultValue();
+    this.value = 0.0;
   };
   inherits(RainLevelCharacteristic, Characteristic);
 
@@ -38,13 +38,13 @@ module.exports = function(accessory) {
       unit: "mm",
       minValue: 0,
       maxValue: 1000,
-      minStep: 0.1,
+      minStep: 0.001,
       perms: [
         Characteristic.Perms.READ,
         Characteristic.Perms.NOTIFY
       ]
     });
-    this.value = this.getDefaultValue();
+    this.value = 0.0;
   };
   inherits(RainLevelSum1Characteristic, Characteristic);
 
@@ -55,18 +55,19 @@ module.exports = function(accessory) {
       unit: "mm",
       minValue: 0,
       maxValue: 1000,
-      minStep: 0.1,
+      minStep: 0.001,
       perms: [
         Characteristic.Perms.READ,
         Characteristic.Perms.NOTIFY
       ]
     });
-    this.value = this.getDefaultValue();
+    this.value = 0.0;
   };
   inherits(RainLevelSum24Characteristic, Characteristic);
 
   var RainLevelSensor = function (displayName, subtype) {
     Service.call(this, displayName, RAIN_LEVEL_STYPE_ID, subtype);
+
     this.addCharacteristic(RainLevelCharacteristic);
     this.addOptionalCharacteristic(Characteristic.Name);
     this.addOptionalCharacteristic(RainLevelSum1Characteristic);
@@ -74,31 +75,51 @@ module.exports = function(accessory) {
   };
   inherits(RainLevelSensor, Service);
 
-  var getRainLevel = function (callback) {
-    accessory.getDashboardValue('Rain', callback);
+  RainLevelSensor.prototype.rainLevel      = 0.0;
+  RainLevelSensor.prototype.rainLevelSum1  = 0.0;
+  RainLevelSensor.prototype.rainLevelSum24 = 0.0;
+
+  RainLevelSensor.prototype.getRainLevel = function (callback) {
+    //accessory.getDashboardValue('Rain', callback);
+    accessory.getDashboardValue('Rain', function(err, rainValue) {
+      if (rainValue) {
+        this.rainLevel = Math.round(rainValue * 1000) / 1000;
+      }
+      callback(err, this.rainLevel);
+    }.bind(this));
   };
 
-  var getRainLevelSum1 = function (callback) {
-    accessory.getDashboardValue('sum_rain_1', callback);
+  RainLevelSensor.prototype.getRainLevelSum1 = function (callback) {
+    accessory.getDashboardValue('sum_rain_1', function(err, rainValue) {
+      if (rainValue) {
+        this.rainLevelSum1 = Math.round(rainValue * 1000) / 1000;
+      }
+      callback(err, this.rainLevelSum1);
+    }.bind(this));
   };
 
-  var getRainLevelSum24 = function (callback) {
-    accessory.getDashboardValue('sum_rain_24', callback);
+  RainLevelSensor.prototype.getRainLevelSum24 = function (callback) {
+    accessory.getDashboardValue('sum_rain_24', function(err, rainValue) {
+      if (rainValue) {
+        this.rainLevelSum24 = Math.round(rainValue * 1000) / 1000;
+      }
+      callback(err, this.rainLevelSum24);
+    }.bind(this));
   };
 
   var rainLevelSensor = new RainLevelSensor(accessory.displayName  + " Rain Level");
   rainLevelSensor.getCharacteristic(RainLevelCharacteristic)
-      .on('get', getRainLevel);
+      .on('get', rainLevelSensor.getRainLevel);
 
   var rainLevelSum1Characteristic = rainLevelSensor.getCharacteristic(RainLevelSum1Characteristic)
       || rainLevelSensor.addCharacteristic(RainLevelSum1Characteristic);
   rainLevelSensor.getCharacteristic(RainLevelSum1Characteristic)
-      .on('get', getRainLevelSum1);
+      .on('get', rainLevelSensor.getRainLevelSum1);
 
   var rainLevelSum24Characteristic = rainLevelSensor.getCharacteristic(RainLevelSum24Characteristic)
       || rainLevelSensor.addCharacteristic(RainLevelSum24Characteristic);
   rainLevelSensor.getCharacteristic(RainLevelSum24Characteristic)
-      .on('get', getRainLevelSum24);
+      .on('get', rainLevelSensor.getRainLevelSum24);
 
   return { Service: rainLevelSensor};
 }
