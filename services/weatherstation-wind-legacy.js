@@ -28,7 +28,7 @@ module.exports = function(accessory) {
         Characteristic.Perms.NOTIFY
       ]
     });
-    this.value = this.getDefaultValue();
+    this.value = 0;
   };
   inherits(WindStrengthCharacteristic, Characteristic);
 
@@ -45,7 +45,7 @@ module.exports = function(accessory) {
         Characteristic.Perms.NOTIFY
       ]
     });
-    this.value = this.getDefaultValue();
+    this.value = 0;
   };
   inherits(WindAngleCharacteristic, Characteristic);
 
@@ -62,7 +62,7 @@ module.exports = function(accessory) {
         Characteristic.Perms.NOTIFY
       ]
     });
-    this.value = this.getDefaultValue();
+    this.value = 0;
   };
   inherits(GustStrengthCharacteristic, Characteristic);
 
@@ -79,7 +79,7 @@ module.exports = function(accessory) {
         Characteristic.Perms.NOTIFY
       ]
     });
-    this.value = this.getDefaultValue();
+    this.value = 0;
   };
   inherits(GustAngleCharacteristic, Characteristic);
 
@@ -93,38 +93,63 @@ module.exports = function(accessory) {
   };
   inherits(WindSensor, Service);
 
+  WindSensor.prototype.windStrength = 0;
+  WindSensor.prototype.windAngle    = 0;
+  WindSensor.prototype.gustStrength = 0;
+  WindSensor.prototype.gustAngle    = 0;
+
   var getWindStrength = function (callback) {
-    accessory.getDashboardValue('WindStrength', callback);
+    accessory.getDashboardValue('WindStrength', function(err, value) {
+      if (value) {
+        this.windStrength = Math.round(value);
+      }
+      callback(err, this.windStrength);
+    }.bind(this));
   };
 
   var getWindAngle = function (callback) {
-    accessory.getDashboardValue('WindAngle', callback);
+    accessory.getDashboardValue('WindAngle', function(err, value) {
+      if (value) {
+        this.windAngle = Math.round(value);
+      }
+      callback(err, this.windAngle);
+    }.bind(this));
   };
 
   var getGustStrength= function (callback) {
-    accessory.getDashboardValue('GustStrength', callback);
+    accessory.getDashboardValue('GustStrength', function(err, value) {
+      if (value) {
+        this.gustStrength = Math.round(value);
+      }
+      callback(err, this.gustStrength);
+    }.bind(this));
   };
 
   var getGustAngle = function (callback) {
-    accessory.getDashboardValue('GustAngle', callback);
+    accessory.getDashboardValue('GustAngle', function(err, value) {
+      if (value) {
+        this.gustAngle = Math.round(value);
+      }
+      callback(err, this.gustAngle);
+    }.bind(this));
   };
 
   var windSensor = new WindSensor(accessory.displayName + " Wind Sensor");
   windSensor.getCharacteristic(WindStrengthCharacteristic)
-    .on('get', getWindStrength);
+    .on('get', windSensor.getWindStrength);
   windSensor.getCharacteristic(WindAngleCharacteristic)
-    .on('get', getWindAngle);
+    .on('get', windSensor.getWindAngle);
 
 
   var gustAngleCharacteristic = windSensor.getCharacteristic(GustAngleCharacteristic)
       || windSensor.addCharacteristic(GustAngleCharacteristic);
   windSensor.getCharacteristic(GustAngleCharacteristic)
-    .on('get', getGustAngle);
+    .on('get', windSensor.getGustAngle);
 
   var gustStrengthCharacteristic = windSensor.getCharacteristic(GustStrengthCharacteristic)
       || windSensor.addCharacteristic(GustStrengthCharacteristic);
   windSensor.getCharacteristic(GustStrengthCharacteristic)
-    .on('get', getGustStrength);
+    .on('get', windSensor.getGustStrength);
 
   return { Service: windSensor};
 }
