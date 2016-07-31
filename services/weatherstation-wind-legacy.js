@@ -98,7 +98,7 @@ module.exports = function(accessory) {
   WindSensor.prototype.gustStrength = 0;
   WindSensor.prototype.gustAngle    = 0;
 
-  var getWindStrength = function (callback) {
+  WindSensor.prototype.getWindStrength = function (callback) {
     accessory.getDashboardValue('WindStrength', function(err, value) {
       if (value) {
         this.windStrength = Math.round(value);
@@ -107,7 +107,7 @@ module.exports = function(accessory) {
     }.bind(this));
   };
 
-  var getWindAngle = function (callback) {
+  WindSensor.prototype.getWindAngle = function (callback) {
     accessory.getDashboardValue('WindAngle', function(err, value) {
       if (value) {
         this.windAngle = Math.round(value);
@@ -116,7 +116,7 @@ module.exports = function(accessory) {
     }.bind(this));
   };
 
-  var getGustStrength= function (callback) {
+  WindSensor.prototype.getGustStrength= function (callback) {
     accessory.getDashboardValue('GustStrength', function(err, value) {
       if (value) {
         this.gustStrength = Math.round(value);
@@ -125,7 +125,7 @@ module.exports = function(accessory) {
     }.bind(this));
   };
 
-  var getGustAngle = function (callback) {
+  WindSensor.prototype.getGustAngle = function (callback) {
     accessory.getDashboardValue('GustAngle', function(err, value) {
       if (value) {
         this.gustAngle = Math.round(value);
