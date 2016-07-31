@@ -27,13 +27,20 @@ function NetatmoPlatform(log, config) {
   this.log = log;
   this.config = config;
  
-  this.api = new netatmo(config["auth"]);
+
+  if (config.mockapi) {
+    this.log('CAUTION! USING FAKE NETATMO API: ' + config.mockapi);
+    this.api = require("./lib/netatmo-api-mock")(config.mockapi);
+  } else {
+    this.api = new netatmo(config["auth"]);
+  }
   this.api.on("error", function (error) {
     that.log('ERROR - Netatmo: ' + error);
   });
   this.api.on("warning", function (error) {
     that.log('WARN - Netatmo: ' + error);
   });
+
 
 /*
   this.repository = new repo.NetAtmoRepository(this.log, this.api, config);

@@ -55,7 +55,7 @@ describe("Netatmo Plugin (index)", function() {
         var config = { auth: dummyAuth};
 
         var platform = new homebridgeMock.PlatformType(console.log, config);
-        platform.api = require("./netatmo-api-mock")('default');
+        platform.api = require("../../lib/netatmo-api-mock")('default');
 
         platform.accessories(function(acc) {
           assert.ok(acc, "Did not find any accessories!");
@@ -67,7 +67,7 @@ describe("Netatmo Plugin (index)", function() {
       it('creates only 3 weatherstation devices in default context', function (done) {
         var config = { auth: dummyAuth, deviceTypes: ['weatherstation']};
         var platform = new homebridgeMock.PlatformType(console.log, config);
-        platform.api = require("./netatmo-api-mock")('default');
+        platform.api = require("../../lib/netatmo-api-mock")('default');
 
         platform.accessories(function(acc) {
           assert.ok(acc, "Did not find any accessories!");

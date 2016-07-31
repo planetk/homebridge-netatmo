@@ -1,0 +1,250 @@
+{
+  "body": {
+    "devices": [
+      {
+        "_id": "10:00:00:00:00:01",
+        "cipher_id": "enc:16:XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX",
+        "last_status_store": 1469639518,
+        "modules": [
+          {
+            "_id": "10:00:00:00:00:02",
+            "type": "NAModule1",
+            "last_message": 1469639513,
+            "last_seen": 1469639500,
+            "dashboard_data": {
+              "time_utc": 1469639500,
+              "Temperature": 25.4,
+              "temp_trend": "down",
+              "Humidity": 50,
+              "date_max_temp": 1469635553,
+              "date_min_temp": 1469595875,
+              "min_temp": 18.8,
+              "max_temp": 28.8
+            },
+            "data_type": [
+              "Temperature",
+              "Humidity"
+            ],
+            "module_name": "Outdoor",
+            "last_setup": 1387476184,
+            "battery_vp": 6390,
+            "battery_percent": 100,
+            "rf_status": 83,
+            "firmware": 43
+          },
+
+          {
+            "_id": "10:00:00:00:00:05",
+            "type": "NAModule2",
+            "last_message": 1469639523,
+            "last_seen": 1469639502,
+            "dashboard_data": {
+              "WindAngle": 188,
+              "WindStrength": 6,
+              "GustAngle": 143,
+              "GustStrength": 15,
+              "time_utc": 1469905065
+            },
+            "WindHistoric": [
+              {
+                "WindStrength": "6",
+                "WindAngle": 200,
+                "time_utc": 1469901739
+              },
+              {
+                "WindStrength": "6",
+                "WindAngle": 217,
+                "time_utc": 1469902040
+              },
+              {
+                "WindStrength": "6",
+                "WindAngle": 200,
+                "time_utc": 1469902342
+              },
+              {
+                "WindStrength": "4",
+                "WindAngle": 178,
+                "time_utc": 1469902643
+              },
+              {
+                "WindStrength": "7",
+                "WindAngle": 197,
+                "time_utc": 1469902944
+              },
+              {
+                "WindStrength": "9",
+                "WindAngle": 182,
+                "time_utc": 1469903245
+              },
+              {
+                "WindStrength": "10",
+                "WindAngle": 191,
+                "time_utc": 1469903546
+              },
+              {
+                "WindStrength": "8",
+                "WindAngle": 193,
+                "time_utc": 1469903848
+              },
+              {
+                "WindStrength": "6",
+                "WindAngle": 194,
+                "time_utc": 1469904155
+              },
+              {
+                "WindStrength": "7",
+                "WindAngle": 213,
+                "time_utc": 1469904457
+              },
+              {
+                "WindStrength": "6",
+                "WindAngle": 192,
+                "time_utc": 1469904764
+              },
+              {
+                "WindStrength": "6",
+                "WindAngle": 188,
+                "time_utc": 1469905065
+              }
+            ],
+            "date_max_wind_str": 1469903245,
+            "date_max_temp": 1469851393,
+            "date_min_temp": 1469881855,
+            "min_temp": -0.8,
+            "max_temp": 0,
+            "max_wind_angle": 225,
+            "max_wind_str": 22,
+            "data_type": [
+              "Wind"
+            ],
+            "module_name": "Wind Gauge",
+            "last_setup": 1464467149,
+            "battery_vp": 5940,
+            "battery_percent": 97,
+            "rf_status": 75,
+            "firmware": 17
+          },
+          {
+            "_id": "10:00:00:00:00:03",
+            "type": "NAModule3",
+            "last_message": 1469639513,
+            "last_seen": 1469639506,
+            "dashboard_data": {
+              "time_utc": 1469639494,
+              "Rain": 0,
+              "sum_rain_24": 0,
+              "sum_rain_1": 0
+            },
+            "data_type": [
+              "Rain"
+            ],
+            "module_name": "Rainmeter",
+            "last_setup": 1448645557,
+            "battery_vp": 6262,
+            "battery_percent": 100,
+            "rf_status": 63,
+            "firmware": 8
+          }
+        ],
+        "place": {
+          "altitude": 8,
+          "country": "DE",
+          "timezone": "Europe/Berlin",
+          "location": [
+            8.841026,
+            53.069313
+          ],
+          "trust_location": true,
+          "geoip_city": "Bremen"
+        },
+        "station_name": "MyStation",
+        "type": "NAMain",
+        "dashboard_data": {
+          "AbsolutePressure": 1015.3,
+          "time_utc": 1469639504,
+          "Noise": 51,
+          "Temperature": 26.9,
+          "temp_trend": "stable",
+          "Humidity": 56,
+          "Pressure": 1016.2,
+          "pressure_trend": "down",
+          "CO2": 436,
+          "date_max_temp": 1469637402,
+          "date_min_temp": 1469598905,
+          "min_temp": 23.9,
+          "max_temp": 26.9
+        },
+        "data_type": [
+          "Temperature",
+          "CO2",
+          "Humidity",
+          "Noise",
+          "Pressure"
+        ],
+        "co2_calibrating": false,
+        "date_setup": 1387502266,
+        "last_setup": 1387502266,
+        "module_name": "Livingroom",
+        "firmware": 111,
+        "invitation_disable": false,
+        "last_upgrade": 1439987546,
+        "wifi_status": 62,
+        "user_owner": [
+          "xxxxxxxxxxxxxxxxx"
+        ],
+        "access_code": "xxxxxxxxxxxxxxxxxx",
+        "alarm_config": {
+          "default_alarm": [
+            {
+              "db_alarm_number": 0
+            },
+            {
+              "db_alarm_number": 1,
+              "desactivated": true
+            },
+            {
+              "db_alarm_number": 2,
+              "desactivated": true
+            },
+            {
+              "db_alarm_number": 6
+            },
+            {
+              "db_alarm_number": 4,
+              "desactivated": true
+            },
+            {
+              "db_alarm_number": 5
+            },
+            {
+              "db_alarm_number": 7,
+              "desactivated": true
+            },
+            {
+              "db_alarm_number": 22,
+              "desactivated": true
+            }
+          ],
+          "personnalized": []
+        },
+        "public_ext_data": true,
+        "meteo_alarms": []
+      }
+    ],
+    "user": {
+      "mail": "me@here.org",
+      "administrative": {
+        "country": "DE",
+        "reg_locale": "de-DE",
+        "lang": "de-DE",
+        "unit": 0,
+        "windunit": 0,
+        "pressureunit": 0,
+        "feel_like_algo": 0
+      }
+    }
+  },
+  "status": "ok",
+  "time_exec": 0.020143985748291,
+  "time_server": 1469639934
+}

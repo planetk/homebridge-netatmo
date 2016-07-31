@@ -12,4 +12,5 @@ TODOs:
 - check logging (console.log)
 - log callback with error != null
 - All //TODO from sources
-- Check Warn sign with rain meter
+- document extended config (switch on/off devices/services)
+- fake accessory config: - config[mockapi] = "suffix" ...
