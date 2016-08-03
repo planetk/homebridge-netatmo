@@ -14,6 +14,22 @@ module.exports = function(accessory) {
     Service = accessory.Service;
     Characteristic = accessory.Characteristic;
   }
+  return { ServiceProvider: ServiceProvider};
+}
+
+var ServiceProvider = function() { }
+
+ServiceProvider.prototype.buildServices = function(accessory, stationData) {
+  var services = [];
+
+  if(stationData.data_type.indexOf('Wind') > -1) {
+    services.push(this.buildWindSensor(accessory, stationData));
+  }
+
+  return services;
+}
+
+ServiceProvider.prototype.buildWindSensor = function(accessory, stationData) {
 
   var WindStrengthCharacteristic = function () {
     Characteristic.call(this, 'Wind Strength', WIND_STRENGTH_CTYPE_ID);
@@ -89,7 +105,6 @@ module.exports = function(accessory) {
     this.addCharacteristic(WindStrengthCharacteristic);
     this.addOptionalCharacteristic(GustAngleCharacteristic);
     this.addOptionalCharacteristic(GustStrengthCharacteristic);
-    this.addOptionalCharacteristic(Characteristic.Name);
   };
   inherits(WindSensor, Service);
 
@@ -140,7 +155,6 @@ module.exports = function(accessory) {
   windSensor.getCharacteristic(WindAngleCharacteristic)
     .on('get', windSensor.getWindAngle);
 
-
   var gustAngleCharacteristic = windSensor.getCharacteristic(GustAngleCharacteristic)
       || windSensor.addCharacteristic(GustAngleCharacteristic);
   windSensor.getCharacteristic(GustAngleCharacteristic)
@@ -151,5 +165,5 @@ module.exports = function(accessory) {
   windSensor.getCharacteristic(GustStrengthCharacteristic)
     .on('get', windSensor.getGustStrength);
 
-  return { Service: windSensor};
+  return windSensor;
 }

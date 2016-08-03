@@ -11,6 +11,22 @@ module.exports = function(accessory) {
     Service = accessory.Service;
     Characteristic = accessory.Characteristic;
   }
+  return { ServiceProvider: ServiceProvider};
+}
+
+var ServiceProvider = function() { }
+
+ServiceProvider.prototype.buildServices = function(accessory, stationData) {
+  var services = [];
+
+  if(stationData.data_type.indexOf('Pressure') > -1) {
+    services.push(this.buildAtmosphericPressureSensor(accessory, stationData));
+  }
+
+  return services;
+}
+
+ServiceProvider.prototype.buildAtmosphericPressureSensor = function(accessory, stationData) {
 
   var AtmosphericPressureCharacteristic = function () {
     Characteristic.call(this, 'Atmospheric Pressure', ATMOSPHERIC_PRESSURE_CTYPE_ID);
@@ -38,7 +54,6 @@ module.exports = function(accessory) {
   };
   inherits(AtmosphericPressureSensor, Service);
 
-
   var getAtmosphericPressure = function (callback) {
     accessory.getDashboardValue('Pressure', callback);
   };
@@ -47,5 +62,5 @@ module.exports = function(accessory) {
   atmosphericPressureSensor.getCharacteristic(AtmosphericPressureCharacteristic)
     .on('get', getAtmosphericPressure);
 
-  return { Service: atmosphericPressureSensor} ; 
+  return atmosphericPressureSensor;
 }

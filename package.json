@@ -15,7 +15,8 @@
 	"dependencies": {
 		"netatmo": "git+https://github.com/karbassi/netatmo.git#v1.5.0",
 		"node-cache": "3.0.0",
-		"async": "2.0.1"
+		"async": "2.0.1",
+		"glob": "7.0.5"
 	},
  	"devDependencies": {
 	    "mocha": "",

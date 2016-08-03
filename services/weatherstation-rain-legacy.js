@@ -13,6 +13,22 @@ module.exports = function(accessory) {
     Service = accessory.Service;
     Characteristic = accessory.Characteristic;
   }
+  return { ServiceProvider: ServiceProvider};
+}
+
+var ServiceProvider = function() { }
+
+ServiceProvider.prototype.buildServices = function(accessory, stationData) {
+  var services = [];
+
+  if(stationData.data_type.indexOf('Rain') > -1) {
+    services.push(this.buildRainLevelSensor(accessory, stationData));
+  }
+
+  return services;
+}
+
+ServiceProvider.prototype.buildRainLevelSensor = function(accessory, stationData) {
 
   var RainLevelCharacteristic = function () {
     Characteristic.call(this, 'Rain Level', RAIN_LEVEL_CTYPE_ID);
@@ -121,5 +137,5 @@ module.exports = function(accessory) {
   rainLevelSensor.getCharacteristic(RainLevelSum24Characteristic)
       .on('get', rainLevelSensor.getRainLevelSum24);
 
-  return { Service: rainLevelSensor};
+  return rainLevelSensor;
 }

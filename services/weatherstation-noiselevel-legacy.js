@@ -11,6 +11,22 @@ module.exports = function(accessory) {
     Service = accessory.Service;
     Characteristic = accessory.Characteristic;
   }
+  return { ServiceProvider: ServiceProvider};
+}
+
+var ServiceProvider = function() { }
+
+ServiceProvider.prototype.buildServices = function(accessory, stationData) {
+  var services = [];
+
+  if(stationData.data_type.indexOf('Noise') > -1) {
+    services.push(this.buildNoiseLevelSensor(accessory, stationData));
+  }
+
+  return services;
+}
+
+ServiceProvider.prototype.buildNoiseLevelSensor = function(accessory, stationData) {
 
   var NoiseLevelCharacteristic = function () {
     Characteristic.call(this, 'Noise Level', NOISE_LEVEL_CTYPE_ID);
@@ -47,5 +63,6 @@ module.exports = function(accessory) {
   noiseLevelSensor.getCharacteristic(NoiseLevelCharacteristic)
     .on('get', getNoiseLevel);
 
-  return { Service: noiseLevelSensor} ; 
+  return noiseLevelSensor;
+
 }

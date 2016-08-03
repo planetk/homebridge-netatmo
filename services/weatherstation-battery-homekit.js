@@ -8,6 +8,22 @@ module.exports = function(accessory) {
     Service = accessory.Service;
     Characteristic = accessory.Characteristic;
   }
+  return { ServiceProvider: ServiceProvider};
+}
+
+var ServiceProvider = function() { }
+
+ServiceProvider.prototype.buildServices = function(accessory, stationData) {
+  var services = [];
+
+  if(stationData.battery_vp) {
+    services.push(this.buildBatteryService(accessory, stationData));
+  }
+
+  return services;
+}
+
+ServiceProvider.prototype.buildBatteryService = function(accessory, stationData) {
 
   var lowBatteryLevel = function(deviceData) {
     var levels = {
@@ -64,6 +80,6 @@ module.exports = function(accessory) {
       .on('get', getStatusLowBattery);
 
 // this.addCharacteristic(Characteristic.ChargingState);
-  
-  return { Service: batteryService} ; 
+
+  return batteryService;
 }

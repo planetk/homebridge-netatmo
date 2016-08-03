@@ -34,30 +34,12 @@ module.exports = function(pExportedTypes, config) {
 var ThermostatAccessory = function(stationData, netAtmoDevice) {
   NetatmoAccessory.call(this, stationData, netAtmoDevice);
   this.moduleId = stationData.modules[0]._id;
-
-  this.serviceTypes = [ "battery", "thermostat" ];
-
-  var serviceTypes = netAtmoDevice.config.serviceTypes || 
-                          [
-                            "thermostat-legacy",
-                            "battery-homekit"
-                          ];
-
-  for (var i = 0; i < serviceTypes.length; i++) {
-    var serviceType = serviceTypes[i];
-    if(this.supportsService(serviceType)) {
-      var service = require('./../services/thermostat-' + serviceType + '.js')(this);
-      this.addService(service.Service);
-    }
-  };
-
 };
 
-ThermostatAccessory.prototype.supportsService = function (serviceType) {
-  var serviceInfo = serviceType.split('-');
-  return this.serviceTypes.indexOf(serviceInfo[0]) > -1;
-};
-
+ThermostatAccessory.prototype.defaultServices = [
+    "thermostat-legacy",
+    "battery-homekit"
+];
 
 var ThermostatDevice = function(log, api, config) {
   NetatmoDevice.call(this, log, api, config);

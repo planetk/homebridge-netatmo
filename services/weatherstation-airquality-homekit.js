@@ -8,6 +8,22 @@ module.exports = function(accessory) {
     Service = accessory.Service;
     Characteristic = accessory.Characteristic;
   }
+  return { ServiceProvider: ServiceProvider};
+}
+
+var ServiceProvider = function() { }
+
+ServiceProvider.prototype.buildServices = function(accessory, stationData) {
+  var services = [];
+
+  if(stationData.data_type.indexOf('CO2') > -1) {
+    services.push(this.buildAirQualitySensor(accessory, stationData));
+  }
+
+  return services;
+}
+
+ServiceProvider.prototype.buildAirQualitySensor = function(accessory, stationData) {
 
   var getAirQuality = function (callback) {
     accessory.getDashboardValue('CO2', function(err, level) {
@@ -25,5 +41,5 @@ module.exports = function(accessory) {
   airQualitySensor.getCharacteristic(Characteristic.AirQuality)
     .on('get', getAirQuality);
 
-  return { Service: airQualitySensor} ; 
+  return airQualitySensor;
 }

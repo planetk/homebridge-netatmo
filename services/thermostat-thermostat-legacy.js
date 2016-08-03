@@ -12,6 +12,20 @@ module.exports = function(accessory) {
     Service = accessory.Service;
     Characteristic = accessory.Characteristic;
   }
+  return { ServiceProvider: ServiceProvider};
+}
+
+var ServiceProvider = function() { }
+
+ServiceProvider.prototype.buildServices = function(accessory, stationData) {
+  var services = [];
+
+  services.push(this.buildThermostatService(accessory, stationData));
+
+  return services;
+}
+
+ServiceProvider.prototype.buildThermostatService = function(accessory, stationData) {
 
   var ThermostatAwayModeCharacteristic = function () {
     Characteristic.call(this, 'Mode Absent', THERM_AWAY_CTYPE_ID);
@@ -153,6 +167,6 @@ module.exports = function(accessory) {
 Characteristic.TemperatureDisplayUnits.CELSIUS
 */
 
-  return { Service: thermostatService} ; 
+  return thermostatService;
 }
  
