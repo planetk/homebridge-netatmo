@@ -10,7 +10,9 @@ TODOs:
 - Labels I18N (config)
 - SoftwareRevision -> plugin version
 - check logging (console.log)
+- remove refresh log / add log for acc
 - log callback with error != null
 - All //TODO from sources
 - document extended config (switch on/off devices/services)
-- fake accessory config: - config[mockapi] = "suffix" ...
+- document fake accessory config: - config[mockapi] = "suffix" ...
+
