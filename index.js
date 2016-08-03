@@ -26,7 +26,9 @@ function NetatmoPlatform(log, config) {
   var that = this;
   this.log = log;
   this.config = config;
- 
+
+  // If this log message is not seen, most likely the config.js is not found.
+  this.log('Creating NetatmoPlatform...');
 
   if (config.mockapi) {
     this.log('CAUTION! USING FAKE NETATMO API: ' + config.mockapi);
@@ -40,15 +42,6 @@ function NetatmoPlatform(log, config) {
   this.api.on("warning", function (error) {
     that.log('WARN - Netatmo: ' + error);
   });
-
-
-/*
-  this.repository = new repo.NetAtmoRepository(this.log, this.api, config);
-
-  // TODO: config reinreichen, für Eve Characteristics
-  NetatmoWeatherStationAccessory = require('./lib/netatmo-weatherstation-accessory.js')(exportedTypes, config);
-  NetatmoThermostatAccessory = require('./lib/netatmo-thermostat-accessory.js')(exportedTypes, config);
-*/
 }
 
 NetatmoPlatform.prototype.accessories = function (callback) {
@@ -76,6 +69,5 @@ NetatmoPlatform.prototype.accessories = function (callback) {
     };
     callback(foundAccessories);    
   });
-
 
 }
