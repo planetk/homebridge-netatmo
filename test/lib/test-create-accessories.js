@@ -51,27 +51,63 @@ describe("Netatmo Plugin (index)", function() {
 
     describe("Homebridge Platform", function() {
 
-      it('creates accessories', function (done) {
-        var config = { auth: dummyAuth};
+      it('creates 4 accessories', function (done) {
+        var config = {
+          auth: dummyAuth,
+          mockapi: 'default'
+        };
 
         var platform = new homebridgeMock.PlatformType(console.log, config);
-        platform.api = require("../../lib/netatmo-api-mock")('default');
 
         platform.accessories(function(acc) {
           assert.ok(acc, "Did not find any accessories!");
+          assert.equal(acc.length, 4);
           done();
         });
 
       });
 
-      it('creates only 3 weatherstation devices in default context', function (done) {
-        var config = { auth: dummyAuth, deviceTypes: ['weatherstation']};
+      it('creates 4 weatherstation accesories in wind context', function (done) {
+        var config = {
+          auth: dummyAuth,
+          mockapi: 'wind',
+          deviceTypes: ['weatherstation']
+        };
         var platform = new homebridgeMock.PlatformType(console.log, config);
-        platform.api = require("../../lib/netatmo-api-mock")('default');
+        
+        platform.accessories(function(acc) {
+          assert.ok(acc, "Did not find any accessories!");
+          assert.equal(acc.length, 4);
+          done();
+        });
+      });
 
+      it('creates 3 weatherstation accesories in default context', function (done) {
+        var config = {
+          auth: dummyAuth,
+          mockapi: 'default',
+          deviceTypes: ['weatherstation']
+        };
+        var platform = new homebridgeMock.PlatformType(console.log, config);
+        
         platform.accessories(function(acc) {
           assert.ok(acc, "Did not find any accessories!");
           assert.equal(acc.length, 3);
+          done();
+        });
+      });
+
+      it('creates 1 thermostat accesory in default context', function (done) {
+        var config = {
+          auth: dummyAuth,
+          mockapi: 'default',
+          deviceTypes: ['thermostat']
+        };
+        var platform = new homebridgeMock.PlatformType(console.log, config);
+        
+        platform.accessories(function(acc) {
+          assert.ok(acc, "Did not find any accessories!");
+          assert.equal(acc.length, 1);
           done();
         });
       });
