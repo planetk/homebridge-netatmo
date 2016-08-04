@@ -1,0 +1,59 @@
+{
+  "body": {
+  	"homes": [
+      {
+  	    "id": "56c881f049c75fe562732029",
+        "name": "Monceaux",
+        "place": {
+          "city": "Minas Tirith",
+          "country": "HU",
+          "timezone": "MiddleEarth/Gondor"
+        },
+        "persons": [
+          {
+            "id": "0c599edd-0ead-490f-9439-f64c4000000",
+            "last_seen": 1458200000,
+            "out_of_sight": true,
+            "face": {
+              "id": "56c89c83cce37c3673c00000",
+              "version": 1,
+              "key": "8627b4a961014287d4d208bda4558d68125876d3260456573a65c15394093cc7"
+            },
+            "pseudo": "Gandalf"
+          }
+        ],
+        "events": [
+          {
+            "id": "5715e88cc6aa429eaxxxxxxx",
+            "type": "person",
+            "time": "146105xxxx",
+            "camera_id": "70:ee:50:xx:xx:xx",
+            "person_id": "a9552acd-xxx",
+            "video_status": "deleted",
+            "is_arrival": false,
+            "message": "Saroumane a été vu(e)"
+          }
+        ],
+        "cameras": [
+          {
+            "id": "70:ee:50:xx:yy:zz",
+            "status": "on",
+            "vpn_url": "https://1.vpn.netatmo.net/xxx0000xxxx,",
+            "is_local": false,
+            "sd_status": "on",
+            "alim_status": "on",
+            "name": "Welcome of the rings"
+          }
+        ]
+      }
+  	],
+    "user": {
+      "reg_locale": "fr-FR",
+      "lang": "fr-FR",
+      "country": "GB"
+    }
+  },
+  "status": "ok",
+  "time_exec": 0.060303926467896,
+  "time_server": "146105XXXX"
+}
