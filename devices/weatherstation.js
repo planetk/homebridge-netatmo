@@ -32,7 +32,7 @@ module.exports = function(pExportedTypes, config) {
 
 var WeatherStationAccessory = function(stationData, netAtmoDevice) {
   NetatmoAccessory.call(this, stationData, netAtmoDevice);
-
+  this.moduleType = stationData.type;
   this.serviceTypes = stationData.data_type;
   if (stationData.battery_vp) {
     this.serviceTypes.push("Battery");

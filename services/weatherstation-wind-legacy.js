@@ -149,7 +149,7 @@ ServiceProvider.prototype.buildWindSensor = function(accessory, stationData) {
     }.bind(this));
   };
 
-  var windSensor = new WindSensor(accessory.displayName + " Wind Sensor");
+  var windSensor = new WindSensor(accessory.name + " Wind Sensor");
   windSensor.getCharacteristic(WindStrengthCharacteristic)
     .on('get', windSensor.getWindStrength);
   windSensor.getCharacteristic(WindAngleCharacteristic)

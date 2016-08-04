@@ -5,7 +5,6 @@ TODOs:
 - Eve History Data
 - Temperature Units (homekit)
 - Min / Max Temp
-- Battery Level ...
 - Radio Link Quality
 - Labels I18N (config)
 - SoftwareRevision -> plugin version

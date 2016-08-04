@@ -58,7 +58,7 @@ ServiceProvider.prototype.buildAtmosphericPressureSensor = function(accessory, s
     accessory.getDashboardValue('Pressure', callback);
   };
 
-  var atmosphericPressureSensor = new AtmosphericPressureSensor(accessory.displayName + " Atmospheric Pressure");
+  var atmosphericPressureSensor = new AtmosphericPressureSensor(accessory.name + " Atmospheric Pressure");
   atmosphericPressureSensor.getCharacteristic(AtmosphericPressureCharacteristic)
     .on('get', getAtmosphericPressure);
 

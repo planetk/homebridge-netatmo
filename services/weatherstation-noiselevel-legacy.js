@@ -59,7 +59,7 @@ ServiceProvider.prototype.buildNoiseLevelSensor = function(accessory, stationDat
     accessory.getDashboardValue('Noise', callback);
   };
 
-  var noiseLevelSensor = new NoiseLevelSensor(accessory.displayName + " Noise Level");
+  var noiseLevelSensor = new NoiseLevelSensor(accessory.name + " Noise Level");
   noiseLevelSensor.getCharacteristic(NoiseLevelCharacteristic)
     .on('get', getNoiseLevel);
 

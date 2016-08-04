@@ -123,7 +123,7 @@ ServiceProvider.prototype.buildRainLevelSensor = function(accessory, stationData
     }.bind(this));
   };
 
-  var rainLevelSensor = new RainLevelSensor(accessory.displayName  + " Rain Level");
+  var rainLevelSensor = new RainLevelSensor(accessory.name  + " Rain Level");
   rainLevelSensor.getCharacteristic(RainLevelCharacteristic)
       .on('get', rainLevelSensor.getRainLevel);
 

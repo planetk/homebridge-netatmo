@@ -46,7 +46,7 @@ ServiceProvider.prototype.buildBatteryService = function(accessory, stationData)
     }.bind(this));
   };
 
-  var batteryService = new Service.BatteryService(accessory.displayName + " Battery Level");
+  var batteryService = new Service.BatteryService(accessory.name + " Battery Level");
   batteryService.getCharacteristic(Characteristic.BatteryLevel)
       .on('get', getBatteryLevel);
   batteryService.getCharacteristic(Characteristic.StatusLowBattery)

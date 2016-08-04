@@ -29,7 +29,7 @@ ServiceProvider.prototype.buildHumiditySensor = function(accessory, stationData)
     accessory.getDashboardValue('Humidity', callback);
   };
 
-  var humiditySensor = new Service.HumiditySensor(accessory.displayName + " Humidity");
+  var humiditySensor = new Service.HumiditySensor(accessory.name + " Humidity");
   humiditySensor.getCharacteristic(Characteristic.CurrentRelativeHumidity)
         .on('get', getCurrentRelativeHumidity);
 

@@ -142,7 +142,7 @@ ServiceProvider.prototype.buildThermostatService = function(accessory, stationDa
   };
 
 
-  var thermostatService = new NetatmoThermostatService(accessory.displayName + " Thermostat");
+  var thermostatService = new NetatmoThermostatService(accessory.name + " Thermostat");
 
   thermostatService.getCharacteristic(ThermostatAwayModeCharacteristic)
     .on('get', getThermostatAwayMode)

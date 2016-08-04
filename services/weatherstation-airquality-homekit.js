@@ -37,7 +37,7 @@ ServiceProvider.prototype.buildAirQualitySensor = function(accessory, stationDat
     });
   };
 
-  var airQualitySensor = new Service.AirQualitySensor(accessory.displayName + " Air Quality");
+  var airQualitySensor = new Service.AirQualitySensor(accessory.name + " Air Quality");
   airQualitySensor.getCharacteristic(Characteristic.AirQuality)
     .on('get', getAirQuality);
 

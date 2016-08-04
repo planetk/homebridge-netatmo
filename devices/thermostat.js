@@ -33,6 +33,7 @@ module.exports = function(pExportedTypes, config) {
 
 var ThermostatAccessory = function(stationData, netAtmoDevice) {
   NetatmoAccessory.call(this, stationData, netAtmoDevice);
+  this.moduleType = stationData.modules[0].type;
   this.moduleId = stationData.modules[0]._id;
 };
 

@@ -36,7 +36,7 @@ ServiceProvider.prototype.buildCarbonDioxideSensor = function(accessory, station
     accessory.getDashboardValue('CO2', callback);
   };
 
-  var carbonDioxideSensor = new Service.CarbonDioxideSensor(accessory.displayName + " Carbon Dioxide");
+  var carbonDioxideSensor = new Service.CarbonDioxideSensor(accessory.name + " Carbon Dioxide");
 
   var carbonDioxideLevelCharacteristic = carbonDioxideSensor.getCharacteristic(Characteristic.CarbonDioxideLevel)
       || carbonDioxideSensor.addCharacteristic(Characteristic.CarbonDioxideLevel);

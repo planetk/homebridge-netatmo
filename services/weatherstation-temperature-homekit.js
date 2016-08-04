@@ -29,7 +29,7 @@ ServiceProvider.prototype.buildTemperatureSensor = function(accessory, stationDa
     accessory.getDashboardValue('Temperature', callback);
   };
 
-  var temperatureSensor = new Service.TemperatureSensor(accessory.displayName + " Temperature");
+  var temperatureSensor = new Service.TemperatureSensor(accessory.name + " Temperature");
   var currentTemperatureCharacteristics = 
           temperatureSensor.getCharacteristic(Characteristic.CurrentTemperature)
   currentTemperatureCharacteristics.setProps({minValue: -100});
