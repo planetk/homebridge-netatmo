@@ -20,8 +20,6 @@ module.exports = function (homebridge) {
 var netatmo = require("netatmo");
 var inherits = require('util').inherits;
 
-//var repo = require("./lib/netatmo-repository");
-
 function NetatmoPlatform(log, config) {
   var that = this;
   this.log = log;
