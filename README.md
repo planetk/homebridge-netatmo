@@ -1,5 +1,13 @@
 [![Build Status](https://secure.travis-ci.org/planetk/homebridge-netatmo.png?branch=master)](http://travis-ci.org/planetk/homebridge-netatmo)
 
+Is this plugin useful for you? Please buy me a beer ...
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="7ZGEPWHG5UH6S">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+</form>
+
 # homebridge-netatmo
 
 This is a plugin for homebridge. It's a working implementation for several netatmo devices:
@@ -45,7 +53,31 @@ To retrieve client id and secret please follow following guide:
 
 # Advanced Configuration
 
-TODO: describe activation/deactivation of devices and servces
+Ther are some optioal configuration options in the netatmo section of the config which provide finer control about what device and services to use to create accessories.
+
+## Control Accessories by device type
+
+<pre>
+            "deviceTypes": [
+              <b>"weatherstation"</b>,
+              <b>"thermostat"</b>,
+              "welcome"
+            ]
+</pre>
+
+This allows you to include/exclude devices of a certain type in your accessories.
+The device types marked **bold** are the **default types**, if this config section is left out.
+
+Please note, that welcome support is by default switched of, since it is not fully implemented yet.
+
+##  Control Accessories by device ID
+
+Not yet implemented
+
+##  Control Services
+
+TBD (Needs description here)
+
 
 # Development
 
@@ -56,17 +88,20 @@ It is intented for software developers who want to modify / enhance the function
 
 <dl>
  <dt>Device</dt>
- <dd>a device in this context is a netatmo hadware device. i.e. the wetherstation, thermostat or the welcome.</dd>
+ <dd>A device in this context is a netatmo hadware device.</dd>
+
+ <dt>Device Type</dt>
+ <dd>Describes the type of the netatmo device i.e. weatherstation, thermostat or welcome.</dd>
+
 
  <dt>Module</dt>
- <dd>some devices contain several module (e.g. weatherstation: main module, rain gauge, outside module, wind gauge). A device or module results in an accessory</dd>
+ <dd>Some devices contain several modules (e.g. weatherstation: main module, rain gauge, outside module, wind gauge). A device or module results in an accessory</dd>
  
 </dl>
 
 ## Concepts
 
-New devices should be put into the */devices* folder. It might be helpful to use the existing devices as template and to inherit the NetatmoDevice. Each device provides one or more accessories
-which provide one or more services.
+New deviceTypes should be put into the */devices* folder. It might be helpful to use the existing deviceTypess as template and to inherit the NetatmoDevice. Each device provides one or more accessories which provide one or more services.
 
 Services are defined inside the */services* folder. The naming convention is, that a service source code file starts with the device name.
 
@@ -113,3 +148,13 @@ Following things are to be developed next.
 * log callbacks with error != null
 * Review all //TODO comments from sources
 * document extended config (switch on/off devices/services)
+
+<hr>
+Is this plugin useful for you? Please buy me a beer ...
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="7ZGEPWHG5UH6S">
+<input type="image" src="https://www.paypalobjects.com/en_US/i/btn/btn_donate_LG.gif" border="0" name="submit" alt="PayPal - The safer, easier way to pay online!">
+<img alt="" border="0" src="https://www.paypalobjects.com/de_DE/i/scr/pixel.gif" width="1" height="1">
+</form>
+
