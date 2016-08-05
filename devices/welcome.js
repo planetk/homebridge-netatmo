@@ -38,10 +38,7 @@ var WelcomeAccessory = function(homeData, netAtmoDevice) {
 };
 
 WelcomeAccessory.prototype.defaultServices = [
-/*
-    "thermostat-legacy",
-    "battery-homekit"
-*/
+    "motionsensor-homekit"
 ];
 
 var WelcomeDevice = function(log, api, config) {
@@ -62,13 +59,14 @@ WelcomeDevice.prototype.refresh = function (callback) {
       home.module_name = home.name;
       home._id = home.id;
       home.firmware = "0.0";
+      home.type="welcome";
 
-      this.log("refreshing thermostat device " + device._id + " (" + device.module_name + ")");
+      this.log("refreshing welcome device " + home._id + " (" + home.module_name + ")");
       homeDevices[home._id] = home;
     }
 
     this.cache.set(this.deviceType, homeDevices);
-    callback(err, homeDevices});
+    callback(err, homeDevices);
   }.bind(this));
 }
 

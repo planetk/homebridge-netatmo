@@ -26,13 +26,24 @@
           {
             "id": "5715e88cc6aa429eaxxxxxxx",
             "type": "person",
-            "time": "146105xxxx",
+            "time": 1458200320,
+            "camera_id": "70:ee:50:xx:xx:xx",
+            "person_id": "a9552acd-xxx",
+            "video_status": "deleted",
+            "is_arrival": false,
+            "message": "Saroumane a été vu(e)"
+          },
+          {
+            "id": "5715e88cc6aa429eaxxxxxxy",
+            "type": "movement",
+            "time": 1580200320,
             "camera_id": "70:ee:50:xx:xx:xx",
             "person_id": "a9552acd-xxx",
             "video_status": "deleted",
             "is_arrival": false,
             "message": "Saroumane a été vu(e)"
           }
+
         ],
         "cameras": [
           {
