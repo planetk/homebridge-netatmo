@@ -62,7 +62,7 @@ There are some optional configuration options in the netatmo section of the conf
 This allows you to include/exclude devices of a certain type in your accessories.
 The device types marked **bold** are the **default types**, if this config section is left out.
 
-Please note, that welcome support is by default switched of, since it is not fully implemented yet.
+Please note, that welcome support is by default switched off, since it is not fully implemented yet.
 
 ##  Control Accessories by device ID
 
@@ -101,11 +101,11 @@ Services are defined inside the */services* folder. The naming convention is, th
 
 The default set of devices and services that are used is the one which resulted from earlier versions.
 
-Please see Chapter #Advanced Configuration on details about how to add on device or service.
+Please see Chapter **Advanced Configuration** on details about how to add a device or a service.
 
 ## Mock API & Testing
 
-New features should be developed with a test scenario. Tests are executed via travis-ci.
+New features should be developed with a test scenario. Tests are executed via travis-ci or npm test.
 
 For debugging and test purposes the software contains a support for a mock netatmo api.
 
@@ -128,11 +128,11 @@ If this is not found as well, empty data is returned.
 # TODO / Next Features
 Following things are to be developed next.
 
-* support for netatmo welcome (motion deteciton)
+* enhance support for netatmo welcome (motion deteciton)
 * review thermostat implementation
 * complete tests
 * add optional eve services including history data
-* recheck temperature units
+* recheck temperature units (Celsius - Fahrenheit)
 * support for min/max temperature
 * add Radio Link Quality characteristic
 * I18N for service and accessory names (config)
