@@ -61,7 +61,9 @@ var WeatherStationDevice = function(log, api, config) {
 inherits(WeatherStationDevice, NetatmoDevice);
 
 WeatherStationDevice.prototype.refresh = function (callback) {
-  this.api.getStationsData(function (err, devices) {
+  var options = this.config["options_weather"]
+ 
+  this.api.getStationsData(options, function (err, devices) {
     // querying for the device infos and the main module
     var i, device, len = devices.length;
     var weatherstations = {};
