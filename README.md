@@ -47,7 +47,7 @@ To retrieve client id and secret please follow following guide:
 
 # Advanced Configuration
 
-Ther are some optioal configuration options in the netatmo section of the config which provide finer control about what device and services to use to create accessories.
+There are some optional configuration options in the netatmo section of the config which provide finer control about what device and services to use to create accessories.
 
 ## Control Accessories by device type
 
