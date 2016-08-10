@@ -31,10 +31,10 @@ module.exports = function(pExportedTypes, config) {
 };
 
 
-var ThermostatAccessory = function(stationData, netAtmoDevice) {
-  NetatmoAccessory.call(this, stationData, netAtmoDevice);
-  this.moduleType = stationData.modules[0].type;
-  this.moduleId = stationData.modules[0]._id;
+var ThermostatAccessory = function(accessoryDataSources, netAtmoDevice) {
+  NetatmoAccessory.call(this, accessoryDataSources, netAtmoDevice);
+  this.moduleType = accessoryDataSources.modules[0].type;
+  this.moduleId = accessoryDataSources.modules[0]._id;
 };
 
 ThermostatAccessory.prototype.defaultServices = [
@@ -48,11 +48,14 @@ var ThermostatDevice = function(log, api, config) {
 }
 inherits(ThermostatDevice, NetatmoDevice);
 
+ThermostatDevice.prototype.AccessoryType = ThermostatAccessory;
+
+
 ThermostatDevice.prototype.refresh = function (callback) {
   this.api.getThermostatsData(function (err, devices) {
     // querying for the device infos and the main module
     var i, device, len = devices.length;
-    var thermostats = {};
+    var accessoryDataSources = {};
     
     for (i=0; i<len; ++i) {
       device = devices[i];
@@ -60,24 +63,12 @@ ThermostatDevice.prototype.refresh = function (callback) {
       // device.module_name = device.station_name + " " + device.module_name
 
       this.log("refreshing thermostat device " + device._id + " (" + device.module_name + ")");
-      thermostats[device._id] = device;
+      accessoryDataSources[device._id] = device;
 
     }
-    this.cache.set(this.deviceType, thermostats);
+    this.cache.set(this.deviceType, accessoryDataSources);
 
-    callback(err, thermostats);
+    callback(err, accessoryDataSources);
   }.bind(this));
 
-}
-
-ThermostatDevice.prototype.buildAccessories = function (callback) {
-  var accessories = [];
-  this.load(function(err, devices) {
-    for (var id in devices) {
-      var deviceData = devices[id];
-      var accesory = new ThermostatAccessory(deviceData, this);
-      accessories.push(accesory);
-    };
-    callback(accessories);
-  }.bind(this));
 }

@@ -30,11 +30,11 @@ module.exports = function(pExportedTypes, config) {
   };
 };
 
-var WeatherStationAccessory = function(stationData, netAtmoDevice) {
-  NetatmoAccessory.call(this, stationData, netAtmoDevice);
-  this.moduleType = stationData.type;
-  this.serviceTypes = stationData.data_type;
-  if (stationData.battery_vp) {
+var WeatherStationAccessory = function(accessoryDataSource, netAtmoDevice) {
+  NetatmoAccessory.call(this, accessoryDataSource, netAtmoDevice);
+  this.moduleType = accessoryDataSource.type;
+  this.serviceTypes = accessoryDataSource.data_type;
+  if (accessoryDataSource.battery_vp) {
     this.serviceTypes.push("Battery");
   }
 
@@ -60,20 +60,23 @@ var WeatherStationDevice = function(log, api, config) {
 }
 inherits(WeatherStationDevice, NetatmoDevice);
 
+WeatherStationDevice.prototype.AccessoryType = WeatherStationAccessory;
+
 WeatherStationDevice.prototype.refresh = function (callback) {
+
   var options = this.config["options_weather"]
  
-  this.api.getStationsData(options, function (err, devices) {
+  this.api.getStationsData(options, function (err, stationModuleData) {
     // querying for the device infos and the main module
-    var i, device, len = devices.length;
-    var weatherstations = {};
+    var i, device, len = stationModuleData.length;
+    var accessoryDataSources = {};
     
     for (i=0; i<len; ++i) {
-      device = devices[i];
+      device = stationModuleData[i];
       device.module_name = device.station_name + " " + device.module_name
 
       this.log("refreshing weatherstation device " + device._id + " (" + device.module_name + ")");
-      weatherstations[device._id] = device;
+      accessoryDataSources[device._id] = device;
 
       // querying for the extra modules
       var modulecount = device.modules.length;
@@ -81,24 +84,12 @@ WeatherStationDevice.prototype.refresh = function (callback) {
         var module = device.modules[j];
         module.module_name = device.station_name + " " + module.module_name
         this.log("refreshing weatherstation module " + module._id + " (" + module.module_name + ")");
-        weatherstations[module._id] = module;
+        accessoryDataSources[module._id] = module;
       }
     }
-    this.cache.set(this.deviceType, weatherstations);
+    this.cache.set(this.deviceType, accessoryDataSources);
 
-    callback(err, weatherstations);
+    callback(err, accessoryDataSources);
   }.bind(this));
 
-}
-
-WeatherStationDevice.prototype.buildAccessories = function (callback) {
-  var accessories = [];
-  this.load(function(err, devices) {
-    for (var id in devices) {
-      var deviceData = devices[id];
-      var accesory = new WeatherStationAccessory(deviceData, this);
-      accessories.push(accesory);
-    };
-    callback(accessories);
-  }.bind(this));
 }

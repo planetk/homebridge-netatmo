@@ -30,11 +30,11 @@ module.exports = function(pExportedTypes, config) {
   };
 };
 
-var WelcomeAccessory = function(homeData, netAtmoDevice) {
-  NetatmoAccessory.call(this, homeData, netAtmoDevice);
+var WelcomeAccessory = function(accessoryDataSource, netatmoDevice) {
+  NetatmoAccessory.call(this, accessoryDataSource, netatmoDevice);
 
   this.moduleType = "welcome";
-  this.moduleId = homeData.id;
+  this.moduleId = accessoryDataSource.id;
 };
 
 WelcomeAccessory.prototype.defaultServices = [
@@ -47,10 +47,12 @@ var WelcomeDevice = function(log, api, config) {
 }
 inherits(WelcomeDevice, NetatmoDevice);
 
+WelcomeDevice.prototype.AccessoryType = WelcomeAccessory;
+
 WelcomeDevice.prototype.refresh = function (callback) {
   this.api.getHomeData(function (err, homeData) {
 
-    var homeDevices = {};
+    var accessoryDataSources = {};
     var i, home, len = homeData.homes.length;
     
     for (i=0; i<len; ++i) {
@@ -62,22 +64,10 @@ WelcomeDevice.prototype.refresh = function (callback) {
       home.type="welcome";
 
       this.log("refreshing welcome device " + home._id + " (" + home.module_name + ")");
-      homeDevices[home._id] = home;
+      accessoryDataSources[home._id] = home;
     }
 
-    this.cache.set(this.deviceType, homeDevices);
-    callback(err, homeDevices);
-  }.bind(this));
-}
-
-WelcomeDevice.prototype.buildAccessories = function (callback) {
-  var accessories = [];
-  this.load(function(err, homeDevices) {
-    for (var id in homeDevices) {
-      var deviceData = homeDevices[id];
-      var accesory = new WelcomeAccessory(deviceData, this);
-      accessories.push(accesory);
-    };
-    callback(accessories);
+    this.cache.set(this.deviceType, accessoryDataSources);
+    callback(err, accessoryDataSources);
   }.bind(this));
 }
