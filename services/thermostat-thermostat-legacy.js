@@ -77,87 +77,105 @@ ServiceProvider.prototype.buildThermostatService = function(accessory, stationDa
   };
   inherits(NetatmoThermostatService, Service);
 
-  var getThermostatAwayMode = function (callback) {
+  NetatmoThermostatService.prototype.awayMode = false;
+  NetatmoThermostatService.prototype.hgMode = false;
+  NetatmoThermostatService.prototype.targetTemperature = 0.0;
+  NetatmoThermostatService.prototype.currentTemperature = 0.0;
+
+  NetatmoThermostatService.prototype.getThermostatAwayMode = function (callback) {
     accessory.getData(function (err, deviceData) {
-      var awayMode = (deviceData.modules[0].setpoint.setpoint_mode === 'away');
-      callback(err, awayMode);
-    });
+      if (deviceData.modules[0].setpoint) {
+        this.awayMode = (deviceData.modules[0].setpoint.setpoint_mode === 'away');
+      }
+      callback(err, this.awayMode);
+    }.bind(this));
   };
 
-  var setThermostatAwayMode = function (value, callback) {
+  NetatmoThermostatService.prototype.setThermostatAwayMode = function (value, callback) {
+    this.awayMode = value;
     accessory.device.api.setThermpoint({
       device_id: accessory.deviceId,
       module_id: accessory.moduleId,
-      setpoint_mode: (value ? 'away' : 'program')
-    }, callback);
-    // TODO: call refresh to update cache ?
-  };
-
-  var getTargetTemperature = function (callback) {
-    accessory.getData(function (err, deviceData) {
-      if (deviceData.modules[0].setpoint.setpoint_temp != undefined) {
-        callback(null, deviceData.modules[0].setpoint.setpoint_temp);
-      } else {
-        callback(err, null);
-      }
+      setpoint_mode: (this.awayMode ? 'away' : 'program')
+    }, function(err, value) {
+      accessory.device.cache.flushAll();
+      callback(err, value);
     });
   };
 
-  var setTargetTemperature = function (value, callback) {
+  NetatmoThermostatService.prototype.getThermostatHgMode = function (callback) {
+    accessory.getData(function (err, deviceData) {
+      if (deviceData.modules[0].setpoint) {
+        this.hgMode = (deviceData.modules[0].setpoint.setpoint_mode === 'hg');
+      }
+      callback(err, this.hgMode);
+    }.bind(this));
+  };
+
+  NetatmoThermostatService.prototype.setThermostatHgMode = function (value, callback) {
+    this.hgMode = value;
+    accessory.device.api.setThermpoint({
+      device_id: accessory.deviceId,
+      module_id: accessory.moduleId,
+      setpoint_mode: (this.hgMode ? 'hg' : 'program')
+    }, function(err, value) {
+      accessory.device.cache.flushAll();
+      callback(err, value);
+    });
+  };
+
+  NetatmoThermostatService.prototype.getTargetTemperature = function (callback) {
+    accessory.getData(function (err, deviceData) {
+
+      if (deviceData.modules[0].setpoint && deviceData.modules[0].setpoint.setpoint_temp != undefined) {
+        this.targetTemperature = deviceData.modules[0].setpoint.setpoint_temp;
+      }
+      callback(err, this.targetTemperature);
+    }.bind(this));
+  };
+
+  NetatmoThermostatService.prototype.setTargetTemperature = function (value, callback) {
+    this.targetTemperature = value;
     accessory.getData(function (err, deviceData) {
       accessory.device.api.setThermpoint({
         device_id: accessory.deviceId,
         module_id: accessory.moduleId,
         setpoint_mode: 'manual',
-        setpoint_temp: value,
+        setpoint_temp: this.targetTemperature,
         setpoint_endtime: deviceData.modules[0].measured.time + (60 * 60 * 3)
-      }, callback);
-    });
+      }, function(err, value) {
+        accessory.device.cache.flushAll();
+        callback(err, value);
+      });
+    }.bind(this));
   };
 
-  var getThermostatHgMode = function (callback) {
+  NetatmoThermostatService.prototype.getCurrentTemperature = function (callback) {
     accessory.getData(function (err, deviceData) {
-      var awayMode = (deviceData.modules[0].setpoint.setpoint_mode === 'hg');
-      callback(err, awayMode);
-    });
-  };
 
-  var setThermostatHgMode = function (value, callback) {
-    accessory.device.api.setThermpoint({
-      device_id: accessory.deviceId,
-      module_id: accessory.moduleId,
-      setpoint_mode: (value ? 'hg' : 'program')
-    }, callback);
-    // TODO: call refresh to update cache ?
-  };
-
-  var getCurrentTemperature = function (callback) {
-    accessory.getData(function (err, deviceData) {
-      if (deviceData.modules[0].measured.temperature != undefined) {
-        callback(null, deviceData.modules[0].measured.temperature);
-      } else {
-        callback(err, null);
+      if (deviceData.modules[0].measured && deviceData.modules[0].measured.temperature != undefined) {
+        this.currentTemperature = deviceData.modules[0].measured.temperature;
       }
-    });
+      callback(err, this.currentTemperature);
+    }.bind(this));
   };
-
 
   var thermostatService = new NetatmoThermostatService(accessory.name + " Thermostat");
-
+ 
   thermostatService.getCharacteristic(ThermostatAwayModeCharacteristic)
-    .on('get', getThermostatAwayMode)
-    .on('set', setThermostatAwayMode);
+    .on('get', thermostatService.getThermostatAwayMode)
+    .on('set', thermostatService.setThermostatAwayMode);
 
   thermostatService.getCharacteristic(ThermostatHgModeCharacteristic)
-    .on('get', getThermostatHgMode)
-    .on('set', setThermostatHgMode);
+    .on('get', thermostatService.getThermostatHgMode)
+    .on('set', thermostatService.setThermostatHgMode);
 
   thermostatService.getCharacteristic(Characteristic.CurrentTemperature)
-    .on('get', getCurrentTemperature);
+    .on('get', thermostatService.getCurrentTemperature);
 
   thermostatService.getCharacteristic(Characteristic.TargetTemperature)
-    .on('get', getTargetTemperature)
-    .on('set', setTargetTemperature);
+    .on('get', thermostatService.getTargetTemperature)
+    .on('set', thermostatService.setTargetTemperature);
 
 /*
     thermostatService
