@@ -26,7 +26,8 @@ function NetatmoPlatform(log, config) {
   this.config = config;
 
   // If this log message is not seen, most likely the config.js is not found.
-  this.log('Creating NetatmoPlatform...');
+  // although the line before will tell the tale, viz., "Initializing netatmo platform"
+  this.log.debug('Creating NetatmoPlatform...');
 
   if (config.mockapi) {
     this.log('CAUTION! USING FAKE NETATMO API: ' + config.mockapi);
@@ -35,10 +36,10 @@ function NetatmoPlatform(log, config) {
     this.api = new netatmo(config["auth"]);
   }
   this.api.on("error", function (error) {
-    that.log('ERROR - Netatmo: ' + error);
+    that.log.error('ERROR - Netatmo: ' + error);
   });
   this.api.on("warning", function (error) {
-    that.log('WARN - Netatmo: ' + error);
+    that.log.warn('WARN - Netatmo: ' + error);
   });
 }
 

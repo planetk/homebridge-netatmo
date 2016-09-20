@@ -75,7 +75,7 @@ WeatherStationDevice.prototype.refresh = function (callback) {
       device = stationModuleData[i];
       device.module_name = device.station_name + " " + device.module_name
 
-      this.log("refreshing weatherstation device " + device._id + " (" + device.module_name + ")");
+      this.log.debug("Refreshing weatherstation device " + device._id + " (" + device.module_name + ")");
       accessoryDataSources[device._id] = device;
 
       // querying for the extra modules
@@ -83,7 +83,7 @@ WeatherStationDevice.prototype.refresh = function (callback) {
       for (var j = 0; j < modulecount; j++) {
         var module = device.modules[j];
         module.module_name = device.station_name + " " + module.module_name
-        this.log("refreshing weatherstation module " + module._id + " (" + module.module_name + ")");
+        this.log.debug("Refreshing weatherstation module " + module._id + " (" + module.module_name + ")");
         accessoryDataSources[module._id] = module;
       }
     }
