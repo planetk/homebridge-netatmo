@@ -62,7 +62,7 @@ ThermostatDevice.prototype.refresh = function (callback) {
       device.module_name = device.station_name; // Multiple ??
       // device.module_name = device.station_name + " " + device.module_name
 
-      this.log("refreshing thermostat device " + device._id + " (" + device.module_name + ")");
+      this.log.debug("Refreshing thermostat device " + device._id + " (" + device.module_name + ")");
       accessoryDataSources[device._id] = device;
 
     }

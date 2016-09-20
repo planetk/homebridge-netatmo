@@ -63,7 +63,7 @@ WelcomeDevice.prototype.refresh = function (callback) {
       home.firmware = "0.0";
       home.type="welcome";
 
-      this.log("refreshing welcome device " + home._id + " (" + home.module_name + ")");
+      this.log.debug("Refreshing welcome device " + home._id + " (" + home.module_name + ")");
       accessoryDataSources[home._id] = home;
     }
 
