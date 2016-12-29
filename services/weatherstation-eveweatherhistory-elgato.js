@@ -31,6 +31,12 @@ c121 =       cf1b521d
 = 3.8.2016, 14:32:15 GMT+2:00 DST (Berlin Zeit)
 
 
+
+116 INIT:
+
+b7460100 88a70000 33d2661d 03010202020302 9200 f50f0000000000000000
+secs     ????     timestam const          meas const
+
 */
 
 module.exports = function(accessory) {
@@ -69,6 +75,11 @@ var swapHexEndianNum = function(value) {
   return parseInt(s2, 16);            // convert to a number
 }
 
+var fillZeros = function(value, digits) {
+  var suffix = "0".repeat(digits);
+  var result = '' + value + digits;
+  return result.substring(0, digits);
+}
 
 var hexToBase64 = function(val) {
     return new Buffer((''+val).replace(/[^0-9A-F]/ig, ''), 'hex').toString('base64');
@@ -126,7 +137,28 @@ EveLogEntry.prototype.toHex = function() {
     return new Buffer(bytesAsStrings.join(''), 'hex').toString('hex');
 }
 
+var formatTimeStamp(ts) {
+  // Strip millis
+  if (ts > 999999999999) ts = Math.floor(ts / 1000);
+
+  ts = ts - 978307200; // Seconds since 1.1.2001
+  var result = swapHexEndianNum(ts);
+  result = fillZeros(result, 8);
+
+  return result;
+}
+
+
 ServiceProvider.prototype.buildEveWeatherHistoryService = function(accessory, stationData) {
+
+  var deviceSetUpTimeStamp = 1470009600000; // 01.08.2016 0:00:00 '000 GMT
+  var measurementBaseTimeStamp  = Date.now();
+  var measurementsSinceTimeStamp = 0;
+
+  console.log("NOW: " + measurementBaseTimeStamp + " - " + formatTimeStamp(measurementBaseTimeStamp));
+  console.log("SET: " + deviceSetUpTimeStamp + " - " + formatTimeStamp(deviceSetUpTimeStamp));
+
+
 
   var Eve116Characteristic = function () {
     Characteristic.call(this, 'Hist 116', EVE_WEATHER_116_CTYPE_ID);
