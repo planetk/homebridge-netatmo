@@ -38,7 +38,7 @@ var ThermostatAccessory = function(accessoryDataSources, netAtmoDevice) {
 };
 
 ThermostatAccessory.prototype.defaultServices = [
-    "thermostat-legacy",
+    "thermostat-homekit",
     "battery-homekit"
 ];
 
