@@ -1,6 +1,6 @@
 {
 	"name": "homebridge-netatmo",
-	"version": "0.1.4",
+	"version": "0.2.0",
 	"description": "Netatmo plugin for homebridge: https://github.com/nfarina/homebridge",
 	"license": "ISC",
 	"keywords": ["homebridge-plugin"],
@@ -10,10 +10,10 @@
 	},
 	"engines": {
 		"node": ">=0.12.0",
-		"homebridge": ">=0.3.4"
+		"homebridge": ">=0.4.16"
 	},
 	"dependencies": {
-		"netatmo": "git+https://github.com/karbassi/netatmo.git#v1.6.0",
+		"netatmo": "2.0.0",
 		"node-cache": "3.0.0",
 		"async": "2.0.1",
 		"glob": "7.0.5"
