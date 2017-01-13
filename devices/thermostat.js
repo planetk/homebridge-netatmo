@@ -1,21 +1,22 @@
-'use strict;'
+'use strict';
 
 var inherits = require('util').inherits;
 var NetatmoDevice = require("../lib/netatmo-device");
 
+var homebridge;
 var Service, Characteristic, Accessory, uuid;
 var NetatmoAccessory;
 var exportedTypes;
 
-module.exports = function(pExportedTypes, config) {
-  if (pExportedTypes && !Accessory) {
-    exportedTypes = pExportedTypes;
-    Service = exportedTypes.Service;
-    Characteristic = exportedTypes.Characteristic;
-    Accessory = exportedTypes.Accessory;
-    uuid = exportedTypes.uuid;
+module.exports = function(pHomebridge) {
+  if (pHomebridge && !Accessory) {
+    homebridge = pHomebridge;
+    Accessory = homebridge.hap.Accessory;
+    Service = homebridge.hap.Service;
+    Characteristic = homebridge.hap.Characteristic;
+    uuid = homebridge.hap.uuid;
 
-    NetatmoAccessory = require("../lib/netatmo-accessory")(exportedTypes);
+    NetatmoAccessory = require("../lib/netatmo-accessory")(pHomebridge);
 
     var acc = ThermostatAccessory.prototype;
     inherits(ThermostatAccessory, NetatmoAccessory);
@@ -42,11 +43,12 @@ ThermostatAccessory.prototype.defaultServices = [
     "battery-homekit"
 ];
 
-var ThermostatDevice = function(log, api, config) {
-  NetatmoDevice.call(this, log, api, config);
-  this.deviceType = "thermostat";
+class ThermostatDevice extends NetatmoDevice {
+  constructor(log, api, config) {
+    super(log, api, config);
+    this.deviceType = "thermostat";
+  }
 }
-inherits(ThermostatDevice, NetatmoDevice);
 
 ThermostatDevice.prototype.AccessoryType = ThermostatAccessory;
 
@@ -62,7 +64,7 @@ ThermostatDevice.prototype.refresh = function (callback) {
       device.module_name = device.station_name; // Multiple ??
       // device.module_name = device.station_name + " " + device.module_name
 
-      this.log("refreshing thermostat device " + device._id + " (" + device.module_name + ")");
+      this.log.debug("Refreshing thermostat device " + device._id + " (" + device.module_name + ")");
       accessoryDataSources[device._id] = device;
 
     }

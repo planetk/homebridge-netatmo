@@ -38,75 +38,96 @@ module.exports = function(pHomebridge) {
 
       this.refreshData(function(err, data) {});
 
-/*
-var task_is_running = false;
-setInterval(function(){
-    if(!task_is_running){
-        task_is_running = true;
-        do_something(42, function(result){
-            task_is_running = false;
-        });
-    }
-}, time_interval_in_miliseconds);
-
-*/
-
     }
 
     refreshData(callback) {
       this.log("refresh");
-      this.device.refreshDeviceData(function (err, allDevicesData, oldDeviceData) {
+      this.device.refreshDeviceData(function (err, deviceData, oldDeviceData) {
         if (!err) {
-          var accessoryData = allDevicesData[this.id];
-          var oldAccessoryData;
-          if (oldDeviceData) {
-            oldAccessoryData = oldDeviceData[this.id];
-          }
-          this.mapAccessoryDataToThermostatData(accessoryData, oldAccessoryData);
+          
+          var accessoryData = this.extractAccessoryData(deviceData);
+          var thermostatData = this.mapAccessoryDataToThermostatData(accessoryData);
+          this.applyThermostatData(thermostatData);
         }
-        callback(err, this.deviceData);
+        callback(err, deviceData);
       }.bind(this));
     }
 
-    mapAccessoryDataToThermostatData(accessoryData, oldAccessoryData) {
-      this.log(JSON.stringify(accessoryData));
+    notifyUpdate(deviceData,oldDeviceData) {
+      var accessoryData = this.extractAccessoryData(deviceData);
+      var thermostatData = this.mapAccessoryDataToThermostatData(accessoryData);
+      this.applyThermostatData(thermostatData);
+    }
+
+    extractAccessoryData(deviceData) {
+      return deviceData[this.id];
+    }
+
+    mapAccessoryDataToThermostatData(accessoryData) {
+      // this.log(JSON.stringify(accessoryData));
+      var result = {};
       var module = accessoryData.modules[0];
 
       if (module) {
-        this.currentTemperature = module.measured.temperature;
+        result.currentTemperature = module.measured.temperature;
 
-        var targetTemperature = 0;
+        result.targetTemperature = 0;
         if (module.measured.setpoint_temp) {
-          targetTemperature = module.measured.setpoint_temp;
+          result.targetTemperature = module.measured.setpoint_temp;
         }
 
         var setpoint = module.setpoint;
-
         if (setpoint) {
           if (setpoint.setpoint_temp != undefined) {
-            targetTemperature = setpoint.setpoint_temp;
+            result.targetTemperature = setpoint.setpoint_temp;
+            result.mode = setpoint.setpoint_mode;
 
-            var mode = setpoint.setpoint_mode;
-            if (mode == 'program') {
-              this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.AUTO;
-            } else if (mode == 'manual' || mode == 'max') {
-              this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.HEAT;
-            } else {
-              this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.OFF;        
-            }  
           }
         }
 
-        if (targetTemperature < 10) targetTemperature = 10;
-        this.targetTemperature = targetTemperature;
+        if (result.targetTemperature < 10) result.targetTemperature = 10;
 
-        var heating = module.therm_relay_cmd;
-        if (heating != 0) {
+        result.heating = (module.therm_relay_cmd != 0);
+      }
+      return result;
+    }
+
+    applyThermostatData(thermostatData) {
+      this.log(">>>THERM: " + JSON.stringify(thermostatData));
+
+      if(thermostatData.currentTemperature && this.currentTemperature != thermostatData.currentTemperature) {
+        this.currentTemperature = thermostatData.currentTemperature;
+        this.log(">>> Notify Services!! current")
+      }
+
+      if(thermostatData.targetTemperature && this.targetTemperature != thermostatData.targetTemperature) {
+        this.targetTemperature = thermostatData.targetTemperature;
+        this.log(">>> Notify Services!! target")
+      }
+
+      if(thermostatData.mode && this.mode != thermostatData.mode) {
+        this.mode = thermostatData.mode;
+        switch(this.mode) {
+          case 'program':
+            this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.AUTO;
+            break;
+          case 'manual':
+          case 'max':
+            this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.HEAT;
+          default:
+            this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.OFF;        
+        }
+        this.log(">>> Notify Services!! mode")
+      }
+
+      if(thermostatData.heating && this.heating != thermostatData.heating) {
+        this.heating = thermostatData.heating;
+        if (this.heating) {
           this.currentHeatingCoolingState = Characteristic.CurrentHeatingCoolingState.HEAT;
         } else {
           this.currentHeatingCoolingState = Characteristic.CurrentHeatingCoolingState.OFF;
         }
-
+        this.log(">>> Notify Services!! heating")
       }
     }
 
