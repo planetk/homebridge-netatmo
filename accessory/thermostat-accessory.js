@@ -5,6 +5,10 @@ const DEFAULT_SERVICES = [
         "battery-homekit"
       ];
 
+const MIN_BATTERY_LEVEL = 2800;
+const LOW_BATTERY_LEVEL = 3000;
+const FULL_BATTERY_LEVEL = 4100;
+
 var AccessoryConfig = require("../lib/accessory-config");
 
 var homebridge;
@@ -33,6 +37,9 @@ module.exports = function(pHomebridge) {
       this.module_id = deviceData.modules[0]._id;
       this.currentTemperature = 11.1;
       this.targetTemperature = 20.0;
+      this.batteryPercent = 100;
+      this.lowBattery = false;
+
       this.currentHeatingCoolingState = Characteristic.CurrentHeatingCoolingState.OFF;
       this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.OFF;
 
@@ -84,6 +91,21 @@ module.exports = function(pHomebridge) {
         if (result.targetTemperature < 10) result.targetTemperature = 10;
 
         result.heating = (module.therm_relay_cmd != 0);
+
+        result.batteryPercent = module.battery_percent;
+
+        result.lowBattery = false;
+        if (module.battery_vp) {
+          if (!result.batteryPercent) {
+            result.batteryPercent = Math.min(Math.round(Math.max(module.battery_vp - MIN_BATTERY_LEVEL, 0) / (FULL_BATTERY_LEVEL - MIN_BATTERY_LEVEL) * 100), 100);
+          }
+          if (module.battery_vp < LOW_BATTERY_LEVEL) {
+            result.lowBattery = true;
+          }
+        }
+        if (!result.batteryPercent) {
+          result.batteryPercent = 100;
+        }
       }
       return result;
     }
@@ -126,7 +148,16 @@ module.exports = function(pHomebridge) {
         } else {
           this.currentHeatingCoolingState = Characteristic.CurrentHeatingCoolingState.OFF;
         }
-        this.log(">>> Notify Services!! heating")
+        dataChanged = true;
+      }
+
+      if(thermostatData.batteryPercent && this.batteryPercent != thermostatData.batteryPercent) {
+        this.batteryPercent = thermostatData.batteryPercent;
+        dataChanged = true;
+      }
+
+      if(thermostatData.lowBattery && this.lowBattery != thermostatData.lowBattery) {
+        this.lowBattery = thermostatData.lowBattery;
         dataChanged = true;
       }
 
@@ -146,7 +177,7 @@ module.exports = function(pHomebridge) {
         setpoint_mode: mode,
         setpoint_temp: temperature
       }, function(err, value) { 
-        this.device.refreshRequired = true;
+        this.device.forceRefresh();
         callback(err, value);
       }.bind(this));
     }

@@ -3,9 +3,6 @@
 var homebridge;
 var Characteristic;
 
-const LOW_BATTERY_LEVEL = 3000;
-const FULL_BATTERY_LEVEL = 4100;
-
 module.exports = function(pHomebridge) {
   if (pHomebridge && !homebridge) {
     homebridge = pHomebridge;
@@ -14,8 +11,7 @@ module.exports = function(pHomebridge) {
 
   class ThermostatService extends homebridge.hap.Service.Thermostat {
     constructor(accessory) {
-      //   var thermostat = new Service.Thermostat(accessory.name + " Thermostat (homekit)");
-      super(accessory.name + " Thermostat (homekit)");
+      super(accessory.name + " Thermostat");
       this.accessory = accessory;
 
       this.temperatureDisplayUnits = Characteristic.TemperatureDisplayUnits.CELSIUS;

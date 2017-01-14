@@ -3,9 +3,6 @@
 var homebridge;
 var Characteristic;
 
-const LOW_BATTERY_LEVEL = 3000;
-const FULL_BATTERY_LEVEL = 4100;
-
 module.exports = function(pHomebridge) {
   if (pHomebridge && !homebridge) {
     homebridge = pHomebridge;
@@ -13,20 +10,41 @@ module.exports = function(pHomebridge) {
   }
 
   class BatteryService extends homebridge.hap.Service.BatteryService {
-    constructor() {
-      super("BatteryLevel");
-      this.getCharacteristic(Characteristic.BatteryLevel)
-        .on('get', this.getBatteryLevel);
-      this.getCharacteristic(Characteristic.StatusLowBattery)
-        .on('get', this.getStatusLowBattery);
-    }
+    constructor(accessory) {
+      super(accessory.name + " Thermostat");
+      this.accessory = accessory;
 
+      this.getCharacteristic(Characteristic.BatteryLevel)
+        .on('get', this.getBatteryLevel.bind(this))
+        .eventEnabled = true;
+      this.getCharacteristic(Characteristic.StatusLowBattery)
+        .on('get', this.getStatusLowBattery.bind(this))
+        .eventEnabled = true;
+      this.getCharacteristic(Characteristic.ChargingState)
+        .on('get', this.getChargingState.bind(this));
+    }
+    
     getBatteryLevel(callback) {
-      callback(null, 20);
+      this.accessory.refreshData(function(err,data) {
+        callback(err, this.accessory.batteryPercent);
+      }.bind(this));
     }
 
     getStatusLowBattery(callback) {
-      callback(null, Characteristic.StatusLowBattery.BATTERY_LEVEL_LOW);
+      this.accessory.refreshData(function(err,data) {
+        callback(err, this.accessory.lowBattery ? Characteristic.StatusLowBattery.BATTERY_LEVEL_LOW : Characteristic.StatusLowBattery.BATTERY_LEVEL_NORMAL);
+      }.bind(this));
+    }
+
+    getChargingState(callback) {
+      callback(null, Characteristic.ChargingState.NOT_CHARGING);
+    }
+
+    updateCharacteristics() {
+      this.getCharacteristic(Characteristic.BatteryLevel)
+            .updateValue(this.accessory.batteryPercent);
+      this.getCharacteristic(Characteristic.StatusLowBattery)
+            .updateValue(this.accessory.lowBattery ? Characteristic.StatusLowBattery.BATTERY_LEVEL_LOW : Characteristic.StatusLowBattery.BATTERY_LEVEL_NORMAL);
     }
   }
   
