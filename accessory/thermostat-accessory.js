@@ -41,19 +41,15 @@ module.exports = function(pHomebridge) {
     }
 
     refreshData(callback) {
-      this.log("refresh");
-      this.device.refreshDeviceData(function (err, deviceData, oldDeviceData) {
+      this.device.refreshDeviceData(function (err, deviceData) {
         if (!err) {
-          
-          var accessoryData = this.extractAccessoryData(deviceData);
-          var thermostatData = this.mapAccessoryDataToThermostatData(accessoryData);
-          this.applyThermostatData(thermostatData);
+          this.notifyUpdate(deviceData);
         }
         callback(err, deviceData);
       }.bind(this));
     }
 
-    notifyUpdate(deviceData,oldDeviceData) {
+    notifyUpdate(deviceData) {
       var accessoryData = this.extractAccessoryData(deviceData);
       var thermostatData = this.mapAccessoryDataToThermostatData(accessoryData);
       this.applyThermostatData(thermostatData);
@@ -93,31 +89,34 @@ module.exports = function(pHomebridge) {
     }
 
     applyThermostatData(thermostatData) {
-      this.log(">>>THERM: " + JSON.stringify(thermostatData));
+      var dataChanged = false
 
       if(thermostatData.currentTemperature && this.currentTemperature != thermostatData.currentTemperature) {
         this.currentTemperature = thermostatData.currentTemperature;
-        this.log(">>> Notify Services!! current")
+        dataChanged = true;
       }
 
       if(thermostatData.targetTemperature && this.targetTemperature != thermostatData.targetTemperature) {
         this.targetTemperature = thermostatData.targetTemperature;
-        this.log(">>> Notify Services!! target")
+        dataChanged = true;
       }
 
       if(thermostatData.mode && this.mode != thermostatData.mode) {
         this.mode = thermostatData.mode;
         switch(this.mode) {
-          case 'program':
-            this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.AUTO;
+          case 'hg':
+            this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.COOL;
             break;
-          case 'manual':
           case 'max':
             this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.HEAT;
-          default:
-            this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.OFF;        
+            break;
+          case 'off':
+            this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.OFF;          
+            break;
+          default: // manual, program
+            this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.AUTO;        
         }
-        this.log(">>> Notify Services!! mode")
+        dataChanged = true;
       }
 
       if(thermostatData.heating && this.heating != thermostatData.heating) {
@@ -128,6 +127,15 @@ module.exports = function(pHomebridge) {
           this.currentHeatingCoolingState = Characteristic.CurrentHeatingCoolingState.OFF;
         }
         this.log(">>> Notify Services!! heating")
+        dataChanged = true;
+      }
+
+      if (dataChanged) {
+        this.getServices().forEach(
+          function( svc ) {
+            svc.updateCharacteristics && svc.updateCharacteristics();
+          }
+        );
       }
     }
 
@@ -138,7 +146,8 @@ module.exports = function(pHomebridge) {
         setpoint_mode: mode,
         setpoint_temp: temperature
       }, function(err, value) { 
-        this.refreshData(callback)
+        this.device.refreshRequired = true;
+        callback(err, value);
       }.bind(this));
     }
 

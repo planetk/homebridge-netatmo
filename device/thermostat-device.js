@@ -25,10 +25,9 @@ module.exports = function(pHomebridge) {
             deviceMap[device["_id"]] = device;
           }.bind(this));
           this.cache.set(this.deviceType, deviceMap);
-          this.oldDeviceData = this.deviceData;
           this.deviceData = deviceMap;
         }
-        callback(err, this.deviceData, this.oldDeviceData);
+        callback(err, this.deviceData);
       }.bind(this));
     }
 
