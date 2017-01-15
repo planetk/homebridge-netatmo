@@ -31,15 +31,6 @@ module.exports = function(pHomebridge) {
       }.bind(this));
     }
 
-    buildAccessories(callback) {
-      Object.keys(this.deviceData).forEach(function(key) {
-        var accessory = this.buildAccessory(this.deviceData[key]);
-        this.log.debug("Did build accessory " + accessory.name );
-        this.accessories.push(accessory);
-      }.bind(this));
-      callback(null, this.accessories);
-    }
-
     buildAccessory(deviceData) {
       return new ThermostatAccessory(deviceData, this);
     }

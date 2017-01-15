@@ -9,8 +9,6 @@ const MIN_BATTERY_LEVEL = 2800;
 const LOW_BATTERY_LEVEL = 3000;
 const FULL_BATTERY_LEVEL = 4100;
 
-var AccessoryConfig = require("../lib/accessory-config");
-
 var homebridge;
 var Characteristic;
 var NetatmoAccessory;
@@ -25,14 +23,16 @@ module.exports = function(pHomebridge) {
   class ThermostatAccessory extends NetatmoAccessory {
     constructor(deviceData, netatmoDevice) {
 
-      var accessoryConfig = new AccessoryConfig (
-          deviceData._id
-        , deviceData.type
-        , deviceData.firmware
-        , deviceData.station_name || "Netatmo " + netatmoDevice.deviceType + " " + deviceData._id
-      );
-      
-      super(homebridge, accessoryConfig, netatmoDevice, DEFAULT_SERVICES);
+      var accessoryConfig = {
+        "id": deviceData._id,
+        "netatmoType": deviceData.type,
+        "firmware": deviceData.firmware,
+        "name": deviceData.station_name || "Netatmo " + netatmoDevice.deviceType + " " + deviceData._id,
+        "defaultServices": DEFAULT_SERVICES
+//        "dataTypes"
+      }
+
+      super(homebridge, accessoryConfig, netatmoDevice);
 
       this.module_id = deviceData.modules[0]._id;
       this.currentTemperature = 11.1;
@@ -84,14 +84,12 @@ module.exports = function(pHomebridge) {
           if (setpoint.setpoint_temp != undefined) {
             result.targetTemperature = setpoint.setpoint_temp;
             result.mode = setpoint.setpoint_mode;
-
           }
         }
 
         if (result.targetTemperature < 10) result.targetTemperature = 10;
 
         result.heating = (module.therm_relay_cmd != 0);
-
         result.batteryPercent = module.battery_percent;
 
         result.lowBattery = false;
@@ -106,6 +104,8 @@ module.exports = function(pHomebridge) {
         if (!result.batteryPercent) {
           result.batteryPercent = 100;
         }
+      } else {
+        this.device.forceRefresh();
       }
       return result;
     }
