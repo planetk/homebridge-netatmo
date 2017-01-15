@@ -11,7 +11,7 @@ module.exports = function(pHomebridge) {
 
   class BatteryService extends homebridge.hap.Service.BatteryService {
     constructor(accessory) {
-      super(accessory.name + " Thermostat");
+      super(accessory.name + " Battery Level");
       this.accessory = accessory;
 
       this.getCharacteristic(Characteristic.BatteryLevel)

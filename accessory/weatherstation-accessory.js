@@ -7,8 +7,8 @@ const DEFAULT_SERVICES = [
         "airquality-homekit",
         "noiselevel-legacy",
         "airpressure-legacy",
-//        "rain-legacy",
-//        "wind-legacy",
+        "rain-legacy",
+        "wind-legacy",
         "battery-homekit"
 ////        "eveweatherhistory-elgato",
 ////        "eveweather-elgato"
@@ -51,7 +51,14 @@ module.exports = function(pHomebridge) {
       this.airPressure = 1000;
       this.humidity = 50;
 			this.noiseLevel = 0;
-
+      this.rainLevel = 0.0;
+      this.rainLevelSum1 = 0.0;
+      this.rainLevelSum24 = 0.0;
+      this.windStrength = 0;
+      this.windAngle = 0;
+      this.gustStrength = 0;
+      this.gustAngle = 0;
+ 
       this.refreshData(function(err, data) {});
   	}
 
@@ -125,7 +132,27 @@ module.exports = function(pHomebridge) {
         if (dashboardData.Noise) {
           result.noiseLevel = dashboardData.Noise;
         }
-        
+        if (dashboardData.Rain) {
+          result.rainLevel = Math.round(dashboardData.Rain * 1000) / 1000;
+        }
+        if (dashboardData.sum_rain_1) {
+          result.rainLevelSum1 = Math.round(dashboardData.sum_rain_1 * 1000) / 1000;
+        }
+        if (dashboardData.sum_rain_24) {
+          result.rainLevelSum24 = Math.round(dashboardData.sum_rain_24 * 1000) / 1000;
+        }
+        if (dashboardData.WindStrength) {
+          result.windStrength = Math.round(dashboardData.WindStrength);
+        }
+        if (dashboardData.WindAngle) {
+          result.windAngle = Math.round(dashboardData.WindAngle);
+        }
+        if (dashboardData.GustStrength) {
+          result.gustStrength = Math.round(dashboardData.GustStrength);
+        }
+        if (dashboardData.GustAngle) {
+          result.gustAngle = Math.round(dashboardData.GustAngle);
+        }
 		  }
 
       result.batteryPercent = accessoryData.battery_percent;
@@ -170,6 +197,35 @@ module.exports = function(pHomebridge) {
 
       if(weatherData.noiseLevel && this.noiseLevel != weatherData.noiseLevel) {
         this.noiseLevel = weatherData.noiseLevel;
+        dataChanged = true;
+      }
+
+      if(weatherData.rainLevel && this.rainLevel != weatherData.rainLevel) {
+        this.rainLevel = weatherData.rainLevel;
+        dataChanged = true;
+      }
+      if(weatherData.rainLevelSum1 && this.rainLevelSum1 != weatherData.rainLevelSum1) {
+        this.rainLevelSum1 = weatherData.rainLevelSum1;
+        dataChanged = true;
+      }
+      if(weatherData.rainLevelSum24 && this.rainLevelSum24 != weatherData.rainLevelSum24) {
+        this.rainLevelSum24 = weatherData.rainLevelSum24;
+        dataChanged = true;
+      }
+      if(weatherData.windStrength && this.windStrength != weatherData.windStrength) {
+        this.windStrength = weatherData.windStrength;
+        dataChanged = true;
+      }
+      if(weatherData.windAngle && this.windAngle != weatherData.windAngle) {
+        this.windAngle = weatherData.windAngle;
+        dataChanged = true;
+      }
+      if(weatherData.gustStrength && this.gustStrength != weatherData.gustStrength) {
+        this.gustStrength = weatherData.gustStrength;
+        dataChanged = true;
+      }
+      if(weatherData.gustAngle && this.gustAngle != weatherData.gustAngle) {
+        this.gustAngle = weatherData.gustAngle;
         dataChanged = true;
       }
 
