@@ -8,14 +8,7 @@ var async = require('async');
 module.exports = function (pHomebridge) {
 
   homebridge = pHomebridge;
-/*
-  exportedTypes = {
-    Accessory: homebridge.hap.Accessory,
-    Service: homebridge.hap.Service,
-    Characteristic: homebridge.hap.Characteristic,
-    uuid: homebridge.hap.uuid
-  };
-*/
+
   homebridge.registerPlatform("homebridge-netatmo", "netatmo", NetatmoPlatform);
 }
 
@@ -29,7 +22,7 @@ class NetatmoPlatform {
     this.foundAccessories = [];
 
     // If this log message is not seen, most likely the config.js is not found.
-    this.log('Creating NetatmoPlatform...');
+    this.log.debug('Creating NetatmoPlatform');
 
     if (config.mockapi) {
       this.log('CAUTION! USING FAKE NETATMO API: ' + config.mockapi);
@@ -46,7 +39,7 @@ class NetatmoPlatform {
   }
 
   accessories(callback) {
-    this.log("Loading accessories");
+    this.log.debug("Loading accessories");
 
     var calls = this.loadDevices();
   
