@@ -18,7 +18,7 @@ var inherits = require('util').inherits;
 class NetatmoPlatform {
   constructor(log, config) {
     this.log = log;
-    this.config = config;
+    this.config = config || {};
     this.foundAccessories = [];
 
     // If this log message is not seen, most likely the config.js is not found.
