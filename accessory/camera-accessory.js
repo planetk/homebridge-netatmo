@@ -29,8 +29,7 @@ module.exports = function(pHomebridge) {
 
       super(homebridge, accessoryConfig, netatmoDevice);
 
-      this.currentTemperature = 11.1;
-      this.targetTemperature = 20.0;
+      this.motionDetected = false;
       this.lastEventTimeStamp = 0;
       this.refreshData(function(err, data) {});
 
@@ -62,9 +61,7 @@ module.exports = function(pHomebridge) {
       var events = accessoryData.events;
 
       var newLastEventTimeStamp = this.lastEventTimeStamp;
-      this.log("new ts before: " + newLastEventTimeStamp);
-      this.log("new ts before: " + newLastEventTimeStamp);
-
+    
       result.motionDetected = false;
 
       if (events) {
