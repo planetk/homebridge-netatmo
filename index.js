@@ -25,16 +25,16 @@ class NetatmoPlatform {
     this.log.debug('Creating NetatmoPlatform');
 
     if (config.mockapi) {
-      this.log('CAUTION! USING FAKE NETATMO API: ' + config.mockapi);
+      this.log.warn('CAUTION! USING FAKE NETATMO API: ' + config.mockapi);
       this.api = require("./lib/netatmo-api-mock")(config.mockapi);
     } else {
       this.api = new netatmo(config["auth"]);
     }
     this.api.on("error", function (error) {
-      this.log('ERROR - Netatmo: ' + error);
+      this.log.error('ERROR - Netatmo: ' + error);
     }.bind(this));
     this.api.on("warning", function (error) {
-      this.log('WARN - Netatmo: ' + error);
+      this.log.warn('WARN - Netatmo: ' + error);
     }.bind(this));
   }
 
@@ -58,7 +58,7 @@ class NetatmoPlatform {
   }
 
   loadDevices() {
-    var deviceTypes = this.config.deviceTypes || [ "weatherstation", "thermostat" ];
+    var deviceTypes = this.config.deviceTypes || [ "weatherstation", "thermostat", "camera" ];
 
     var calls = [];
 
