@@ -1,11 +1,30 @@
 [![Build Status](https://secure.travis-ci.org/planetk/homebridge-netatmo.png?branch=master)](http://travis-ci.org/planetk/homebridge-netatmo)
 [![downloads][downloads-image]][downloads-url]
+Like this? Please buy me a beer ...
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7ZGEPWHG5UH6S)
 
 [downloads-image]: https://img.shields.io/npm/dm/homebridge-netatmo.svg?style=flat
 [downloads-url]: https://npmjs.org/package/homebridge-netatmo
 
-Is this plugin useful for you? Please buy me a beer ...
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7ZGEPWHG5UH6S)
+
+# This is an unreleased Version
+
+Things might be broken and no longer working as expected ...
+
+**Changes**
+
+* thermostat Implementation is now supported in "home" App
+* Regular polling for updates (Trying to b nice to the API, so update may take a while to be seen on the phone)
+* Fully refactored, cleaner classes
+* renamed "welcome" devices to "camera"
+* support for "presence"
+* new motion detection 
+* Using ES6
+* new homekit 0.4
+* netatmo API update
+* new logging API
+
+
 
 # homebridge-netatmo
 
@@ -60,7 +79,7 @@ There are some optional configuration options in the netatmo section of the conf
             "deviceTypes": [
               <b>"weatherstation"</b>,
               <b>"thermostat"</b>,
-              "welcome"
+              "camera"
             ]
 </pre>
 
@@ -142,15 +161,18 @@ Following things are to be developed next.
 * add Radio Link Quality characteristic
 * I18N for service and accessory names (config)
 * add SoftwareRevision characteristic -> plugin version
-* check logging (remove console.log)
+* <strike>check logging (remove console.log)</strike>
 * remove refresh log / add log for acc
 * log callbacks with error != null
 * Review all //TODO comments from sources
 * document extended config (switch on/off devices/services)
+* fix env/tests
+* names in config
+* whitelist /blacklist
 
 ----
 
 Is this plugin useful for you? Please buy me a beer ...
-[![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7ZGEPWHG5UH6S)
+[![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7ZGEPWHG5UH6S)
 
 
