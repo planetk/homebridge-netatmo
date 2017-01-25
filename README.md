@@ -1,4 +1,4 @@
-[![Build Status](https://secure.travis-ci.org/planetk/homebridge-netatmo.png?branch=master)](http://travis-ci.org/planetk/homebridge-netatmo)
+[![Build Status](https://secure.travis-ci.org/planetk/homebridge-netatmo.png?branch=dev)](http://travis-ci.org/planetk/homebridge-netatmo)
 [![downloads][downloads-image]][downloads-url]
 Like this? Please buy me a beer ...
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7ZGEPWHG5UH6S)
