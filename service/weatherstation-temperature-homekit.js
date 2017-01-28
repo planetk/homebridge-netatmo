@@ -14,9 +14,10 @@ module.exports = function(pHomebridge) {
       super(accessory.name + " Temperature");
       this.accessory = accessory;
 
-      this.getCharacteristic(Characteristic.CurrentTemperature)
-        .on('get', this.getCurrentTemperature.bind(this))
-        .eventEnabled = true;
+      var tmpChar = this.getCharacteristic(Characteristic.CurrentTemperature);
+      tmpChar.setProps({ minValue: -100 });
+      tmpChar.on('get', this.getCurrentTemperature.bind(this));
+      tmpChar.eventEnabled = true;
 
     }
 
