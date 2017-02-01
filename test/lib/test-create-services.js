@@ -1,4 +1,5 @@
 var assert = require('assert');
+var log = require("./logger")._system;
 
 var homebridgeMock = require('./homebridge-mock')();
 require('./mock-types');
@@ -25,45 +26,50 @@ describe("Services", function() {
         mockapi: "wind"
       };
 
-      var platform = new homebridgeMock.PlatformType(console.log, config);
+      var platform = new homebridgeMock.PlatformType(log, config);
 
       platform.accessories(function(accs) {
         accs.forEach(function(acc) {
           it("Accessory " + acc.name + " has correct services", function (done) {
 
-            assert(acc.getService(Service.AccessoryInformation), "Module " + acc.moduleType + " should have AccessoryInformationService");
+            assert(acc.getService(Service.AccessoryInformation), "Module " + acc.netatmoType + " should have AccessoryInformationService");
 
-            switch (acc.moduleType) {
+            switch (acc.netatmoType) {
               case "NAMain" : // Main module
-                assert(acc.getService(Service.TemperatureSensor), "Module " + acc.moduleType + " should have TemperatureSensor");
-                assert(acc.getService(Service.HumiditySensor), "Module " + acc.moduleType + " should have HumiditySensor");
-                assert(acc.getService(Service.CarbonDioxideSensor), "Module " + acc.moduleType + " should have CarbonDioxideSensor");
-                assert(acc.getService(Service.AirQualitySensor), "Module " + acc.moduleType + " should have CarbonDioxideSensor");
-                assert(acc.getService(acc.name + " Atmospheric Pressure"), "Module " + acc.moduleType + " should have Atmospheric Pressure service");
-                assert(acc.getService(acc.name + " Noise Level"), "Module " + acc.moduleType + " should have Noise Level service");
+                assert(acc.getService(Service.TemperatureSensor), "Module " + acc.netatmoType + " should have TemperatureSensor");
+                assert(acc.getService(Service.HumiditySensor), "Module " + acc.netatmoType + " should have HumiditySensor");
+                assert(acc.getService(Service.CarbonDioxideSensor), "Module " + acc.netatmoType + " should have CarbonDioxideSensor");
+                assert(acc.getService(Service.AirQualitySensor), "Module " + acc.netatmoType + " should have CarbonDioxideSensor");
+                assert(acc.getService( acc.name + " Air Pressure"), "Module " + acc.netatmoType + " should have Atmospheric Pressure service");
+                assert(acc.getService(acc.name + " Noise Level"), "Module " + acc.netatmoType + " should have Noise Level service");
 
-                assert(null == acc.getService(Service.BatteryService), "Module " + acc.moduleType + " should not have BatteryService");
+                assert(null == acc.getService(Service.BatteryService), "Module " + acc.netatmoType + " should not have BatteryService");
 
                 break;
               case "NAModule1" : // Outside module
-                assert(acc.getService(Service.BatteryService), "Module " + acc.moduleType + " should have BatteryService");
-                assert(acc.getService(Service.TemperatureSensor), "Module " + acc.moduleType + " should have TemperatureSensor");
-                assert(acc.getService(Service.HumiditySensor), "Module " + acc.moduleType + " should have HumiditySensor");
+                assert(acc.getService(Service.BatteryService), "Module " + acc.netatmoType + " should have BatteryService");
+                assert(acc.getService(Service.TemperatureSensor), "Module " + acc.netatmoType + " should have TemperatureSensor");
+                assert(acc.getService(Service.HumiditySensor), "Module " + acc.netatmoType + " should have HumiditySensor");
                 break;
               case "NAModule2" : // Wind gauge
-                assert(acc.getService(acc.name + " Wind Sensor"), "Module " + acc.moduleType + " should have Wind Strength service");
-                assert(acc.getService(Service.BatteryService), "Module " + acc.moduleType + " should have BatteryService");
+                assert(acc.getService(acc.name + " Wind Sensor"), "Module " + acc.netatmoType + " should have Wind Strength service");
+                assert(acc.getService(Service.BatteryService), "Module " + acc.netatmoType + " should have BatteryService");
                 break;
               case "NAModule3" : // Rain gauge
-                assert(acc.getService(acc.name + " Rain Level"), "Module " + acc.moduleType + " should have Rain Level service");
-                assert(acc.getService(Service.BatteryService), "Module " + acc.moduleType + " should have BatteryService");
+                assert(acc.getService(acc.name + " Rain Level"), "Module " + acc.netatmoType + " should have Rain Level service");
+                assert(acc.getService(Service.BatteryService), "Module " + acc.netatmoType + " should have BatteryService");
+                break;
+              case "camera" : // camera devices
+                assert(acc.getService(Service.MotionSensor), "Module " + acc.netatmoType + " should have TemperatureSensor");
+                break;
+              case "NAPlug" : // Relais
                 break;
               case "NATherm1" : // Thermostat
-                assert(acc.getService(acc.name + " Thermostat"), "Module " + acc.moduleType + " should have ThermostatService");
-                assert(acc.getService(Service.BatteryService), "Module " + acc.moduleType + " should have BatteryService");
+                assert(acc.getService(acc.name + " Thermostat"), "Module " + acc.netatmoType + " should have ThermostatService");
+                assert(acc.getService(Service.BatteryService), "Module " + acc.netatmoType + " should have BatteryService");
                 break;
               default:
-                assert.fail(acc.moduleType, 'Any of NAMain, NATherm1', 'Found unknown accsory');
+                assert.fail(acc.moduleType, 'Any of NAMain, NATherm1', 'Found unknown accessory ' + acc.netatmoType);
 
             }
 

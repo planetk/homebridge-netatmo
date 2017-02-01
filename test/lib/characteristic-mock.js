@@ -173,6 +173,13 @@ Characteristic.prototype.setValue = function(newValue, callback, context) {
   return this; // for chaining
 }
 
+Characteristic.prototype.updateValue = function(newValue, callback, context) {
+  this.value = newValue;
+  if (callback) callback();
+  return this; // for chaining
+}
+
+
 Characteristic.prototype.getDefaultValue = function() {
   switch (this.props.format) {
     case Characteristic.Formats.BOOL: return false;

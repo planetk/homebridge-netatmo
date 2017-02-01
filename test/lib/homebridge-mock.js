@@ -1,5 +1,4 @@
 'use strict';
-
 var ServiceMock = require('./service-mock').Service;
 var CharacteristicMock = require('./characteristic-mock').Characteristic;
 require("./mock-types");

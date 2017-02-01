@@ -24,15 +24,21 @@ Things might be broken and no longer working as expected ...
 * netatmo API update
 * new logging API
 
+**TODO**
+
+* Test Fixes
+* Recheck Thermostat Ranges
 
 
 # homebridge-netatmo
 
 This is a plugin for homebridge. It's a working implementation for several netatmo devices:
 
-* **netatmo weather station** fully supported
-* **netatmo thermostat** base functionality supported
-* **netatmo welcome** currently under development
+* **netatmo weather station**
+* **netatmo thermostat**
+* **netatmo welcome** 
+
+_Please check [notes on devices](#notes) below for detailed information on supported modules_.
 
 # Installation
 
@@ -41,6 +47,9 @@ This is a plugin for homebridge. It's a working implementation for several netat
 3. Update your configuration file. See sample-config.json in this repository for a sample. 
 
 # Configuration
+
+## Simple Configuration
+
 
 Configuration sample:
 
@@ -69,11 +78,11 @@ To retrieve client id and secret please follow following guide:
 4. After successfully submitting the form the overview page of your app should show client id and secret.
 
 
-# Advanced Configuration
+## Advanced Configuration
 
 There are some optional configuration options in the netatmo section of the config which provide finer control about what device and services to use to create accessories.
 
-## Control Accessories by device type
+### Control Accessories by device type
 
 <pre>
             "deviceTypes": [
@@ -88,13 +97,40 @@ The device types marked **bold** are the **default types**, if this config secti
 
 Please note, that welcome support is by default switched off, since it is not fully implemented yet.
 
-##  Control Accessories by device ID
+###  Control Accessories by device ID
 
 Not yet implemented
 
-##  Control Services
+###  Control Services
 
 TBD (Needs description here)
+
+
+#<a name="notes"></a> Notes on devices
+## Weather station
+The indoor module and outdoor module are fully supported.
+The rain gauge and the wind gauge are in general supported, but these devices use characteristics, which are not supported by the home app.
+
+For this reason the home app shows the devices as not supported. If you want to use this devices you should consider to use a different homekit app. For example elgato's <a href="https://itunes.apple.com/us/app/elgato-eve/id917695792" target="blank">eve</a> app is a good free alternative.
+
+## Thermostat
+The thermostat is fully supported. There are a few things to know:
+
+* The allowed temperature ranges differ between netatmo themostat and apple home app. This results in a narrower range of possible temperatures.
+* Mapping of Temperature Modes between netatmo and apple is done as good as possible, but might be slightly confusing under certain conditions.
+* After setting a temperature, the thermostat might return to automatic mode. Check your netatmo settings.
+
+## Cameras (Welcome and Presence)
+The camera devices are currently only supported as simple motion sensors.
+Motion detection might be delayed, since the polling is required an netatmo has strict request rate limits.
+
+Any events of Type "movement", "person" and "outdoor" will be considered as a motion.
+
+This implementation will most likely be refactored in future.
+
+#FAQ
+- "not supported"
+- "notifications only when home app opened" -> update, ifttt plugin
 
 
 # Development
@@ -152,8 +188,7 @@ If this is not found as well, empty data is returned.
 # TODO / Next Features
 Following things are to be developed next.
 
-* enhance support for netatmo welcome (motion deteciton)
-* review thermostat implementation
+* enhance support for netatmo welcome (images?, callbacks?,)
 * complete tests
 * add optional eve services including history data
 * recheck temperature units (Celsius - Fahrenheit)
@@ -161,18 +196,23 @@ Following things are to be developed next.
 * add Radio Link Quality characteristic
 * I18N for service and accessory names (config)
 * add SoftwareRevision characteristic -> plugin version
-* <strike>check logging (remove console.log)</strike>
-* remove refresh log / add log for acc
 * log callbacks with error != null
 * Review all //TODO comments from sources
 * document extended config (switch on/off devices/services)
 * fix env/tests
 * names in config
 * whitelist /blacklist
+* trigger switches (-> pushover, enigma, virtual switch for scenes -> push)
 
 ----
 
 Is this plugin useful for you? Please buy me a beer ...
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7ZGEPWHG5UH6S)
 
+Thank you for buying me a beer to follwing mates:
 
+* Samuel J.
+* Alexis A.
+* Sylvain D.
+* Sebastian K.
+* Frank H.

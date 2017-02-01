@@ -1,4 +1,5 @@
 var assert = require('assert');
+var log = require("./logger")._system;
 
 var homebridgeMock = require('./homebridge-mock')();
 
@@ -34,7 +35,7 @@ describe("Netatmo Plugin (index)", function() {
       it('fails with missing auth key in config', function () {
         var config = {};
         try {
-          var platform = new homebridgeMock.PlatformType(console.log, config);
+          var platform = new homebridgeMock.PlatformType(log, config);
         } catch (error) {
           assert.equal(error.message, "Authenticate 'args' not set.");
         }
@@ -44,24 +45,24 @@ describe("Netatmo Plugin (index)", function() {
     describe("Homebridge Platform", function() {
       it('succeeds with existing API Auth Info', function () {
         var config = { auth: dummyAuth};
-        var platform = new homebridgeMock.PlatformType(console.log, config);
+        var platform = new homebridgeMock.PlatformType(log, config);
         assert.ok(platform, "Could not init platform");
       });
     });
 
     describe("Homebridge Platform", function() {
 
-      it('creates 4 accessories', function (done) {
+      it('creates 5 accessories', function (done) {
         var config = {
           auth: dummyAuth,
           mockapi: 'default'
         };
 
-        var platform = new homebridgeMock.PlatformType(console.log, config);
+        var platform = new homebridgeMock.PlatformType(log, config);
 
         platform.accessories(function(acc) {
           assert.ok(acc, "Did not find any accessories!");
-          assert.equal(acc.length, 4);
+          assert.equal(acc.length, 5);
           done();
         });
 
@@ -73,7 +74,7 @@ describe("Netatmo Plugin (index)", function() {
           mockapi: 'wind',
           deviceTypes: ['weatherstation']
         };
-        var platform = new homebridgeMock.PlatformType(console.log, config);
+        var platform = new homebridgeMock.PlatformType(log, config);
         
         platform.accessories(function(acc) {
           assert.ok(acc, "Did not find any accessories!");
@@ -88,7 +89,7 @@ describe("Netatmo Plugin (index)", function() {
           mockapi: 'default',
           deviceTypes: ['weatherstation']
         };
-        var platform = new homebridgeMock.PlatformType(console.log, config);
+        var platform = new homebridgeMock.PlatformType(log, config);
         
         platform.accessories(function(acc) {
           assert.ok(acc, "Did not find any accessories!");
@@ -103,7 +104,7 @@ describe("Netatmo Plugin (index)", function() {
           mockapi: 'default',
           deviceTypes: ['thermostat']
         };
-        var platform = new homebridgeMock.PlatformType(console.log, config);
+        var platform = new homebridgeMock.PlatformType(log, config);
         
         platform.accessories(function(acc) {
           assert.ok(acc, "Did not find any accessories!");

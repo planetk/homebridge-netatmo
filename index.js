@@ -63,14 +63,19 @@ class NetatmoPlatform {
     var calls = [];
 
     deviceTypes.forEach(function(deviceType) {
-      calls.push(function(callback) {
-        var DeviceType = require('./device/' + deviceType + '-device.js')(homebridge);
-
-        var devType = new DeviceType(this.log, this.api, this.config);
-        devType.buildAccessoriesForDevices(function(err, deviceAccessories) {
-          callback(err, deviceAccessories);
-        });
-      }.bind(this));
+      try {
+        calls.push(function(callback) {
+          var DeviceType = require('./device/' + deviceType + '-device.js')(homebridge);
+          var devType = new DeviceType(this.log, this.api, this.config);
+          devType.buildAccessoriesForDevices(function(err, deviceAccessories) {
+            callback(err, deviceAccessories);
+          });
+        }.bind(this));
+      } catch (err) {
+        this.log("Could not process device " + deviceType);
+        this.log(err);
+        this.log(err.stack); 
+      }
     }.bind(this));
 
     return calls;
