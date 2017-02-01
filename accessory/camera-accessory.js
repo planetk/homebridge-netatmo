@@ -61,22 +61,32 @@ module.exports = function(pHomebridge) {
       var events = accessoryData.events;
 
       var newLastEventTimeStamp = this.lastEventTimeStamp;
-    
+
       result.motionDetected = false;
 
       if (events) {
-        events.forEach(function(event) {
+         events.forEach(function(event) {
           if (event.time > newLastEventTimeStamp) {
             newLastEventTimeStamp = event.time;
           }
           if (event.time > this.lastEventTimeStamp) {
-             result.motionDetected = result.motionDetected || event.type == 'movement'
+            result.motionDetected = result.motionDetected || this.eventIsMotion(event)
           }
         }.bind(this));
         this.lastEventTimeStamp = newLastEventTimeStamp;
       }
 
       return result;
+    }
+
+    eventIsMotion(event) {
+      if (event.type == 'movement') {
+        return true;
+      }
+      if (event.type == 'person') {
+        return true;
+      }
+      return false;
     }
 
     applyHomeData(homeData) {
