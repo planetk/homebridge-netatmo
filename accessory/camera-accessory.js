@@ -86,6 +86,9 @@ module.exports = function(pHomebridge) {
       if (event.type == 'person') {
         return true;
       }
+      if (event.type == 'outdoor') {
+        return true;
+      }
       return false;
     }
 
