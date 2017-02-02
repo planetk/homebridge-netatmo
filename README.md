@@ -1,28 +1,10 @@
-[![Build Status](https://secure.travis-ci.org/planetk/homebridge-netatmo.png?branch=dev)](http://travis-ci.org/planetk/homebridge-netatmo)
+[![Build Status](https://secure.travis-ci.org/planetk/homebridge-netatmo.png?branch=master)](http://travis-ci.org/planetk/homebridge-netatmo)
 [![downloads][downloads-image]][downloads-url]
 Like this? Please buy me a beer ...
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7ZGEPWHG5UH6S)
 
 [downloads-image]: https://img.shields.io/npm/dm/homebridge-netatmo.svg?style=flat
 [downloads-url]: https://npmjs.org/package/homebridge-netatmo
-
-
-# This is an unreleased Version
-
-Things might be broken and no longer working as expected ...
-
-**Changes**
-
-* thermostat Implementation is now supported in "home" App
-* Regular polling for updates (Trying to be nice to the API, so update may take a while to be seen on the phone)
-* Fully refactored, cleaner classes
-* renamed "welcome" devices to "camera"
-* support for "presence"
-* new motion detection 
-* Using ES6
-* new homekit 0.4
-* netatmo API update
-* new logging API
 
 # homebridge-netatmo
 
@@ -190,6 +172,22 @@ In short:
 If you like this, your welcome to give a small donation. Check button at top/bottom of page.
 If you like to join development check the sources, open issues and pull requests.
 Thanx!
+
+
+# Changes
+
+## 0.2.0
+* Version 0.2.0 is a complete refactoring, some config changes might be required
+* thermostat implementation is now supported in "home" App
+* Regular polling for updates (Trying to be nice to the API, so update may take a while to be seen on the phone)
+* Fully refactored, cleaner classes
+* renamed "welcome" devices to "camera"
+* support for "presence" devices
+* new motion detection 
+* Using ES6
+* new homekit 0.4
+* netatmo API update
+* new logging API
 
 # Development
 
