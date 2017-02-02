@@ -14,7 +14,7 @@ Things might be broken and no longer working as expected ...
 **Changes**
 
 * thermostat Implementation is now supported in "home" App
-* Regular polling for updates (Trying to b nice to the API, so update may take a while to be seen on the phone)
+* Regular polling for updates (Trying to be nice to the API, so update may take a while to be seen on the phone)
 * Fully refactored, cleaner classes
 * renamed "welcome" devices to "camera"
 * support for "presence"
@@ -23,12 +23,6 @@ Things might be broken and no longer working as expected ...
 * new homekit 0.4
 * netatmo API update
 * new logging API
-
-**TODO**
-
-* Test Fixes
-* Recheck Thermostat Ranges
-
 
 # homebridge-netatmo
 
@@ -85,11 +79,24 @@ There are some optional configuration options in the netatmo section of the conf
 ### Control Accessories by device type
 
 <pre>
-            "deviceTypes": [
-              <b>"weatherstation"</b>,
-              <b>"thermostat"</b>,
+
+    "platforms": [
+        {
+            "platform": "netatmo",
+            
+            ...
+            
+            <b>"deviceTypes": [
+              "weatherstation",
+              "thermostat",
               "camera"
-            ]
+            ],</b>
+
+            ...
+            
+        }
+    ],
+
 </pre>
 
 This allows you to include/exclude devices of a certain type in your accessories.
@@ -99,7 +106,34 @@ Please note, that welcome support is by default switched off, since it is not fu
 
 ###  Control Accessories by device ID
 
-Not yet implemented
+Controlling devices can be done pn a finer level by id. The id of a netatmo device or module basically is it's mac address.
+
+In order to include or exclude a specific device, the corresponding id can be included in a whitelist resp. blacklist.
+
+If the whitelist contains at least one entry, all oter ids will be excluded.
+
+<pre>
+
+    "platforms": [
+        {
+            "platform": "netatmo",
+            
+            ...
+            
+            <b>"whitelist": [
+              "aa:bb:cc:11:22:33"
+            ],
+            "blacklist": [
+              "01:02:03:04:05:06",
+              "01:23:45:67:89:ab"
+            ],</b>
+
+            ...
+            
+        }
+    ],
+
+</pre>
 
 ###  Control Services
 
@@ -129,9 +163,33 @@ Any events of Type "movement", "person" and "outdoor" will be considered as a mo
 This implementation will most likely be refactored in future.
 
 #FAQ
-- "not supported"
-- "notifications only when home app opened" -> update, ifttt plugin
 
+##My rain/wind gauge shows up as not supported
+This is due to limmited support of the home app. Try to use a different homekit app. Check [notes on devices](#notes) for further info.
+
+##I only get notifications when home app is opened
+This themes to ba an issue with ios and hap lib. There is nothing I can do about it. Possible you should check the hombridge ifttt plugin with pushover app for notifications.
+
+##Updates of vlaues are delayed
+This is due to rate limits from netatmo. If polling rate is increased your account might get blocked by netatmo
+
+##netatmo authentication failes
+Please recheck your config settings and your netatmo account.
+Sometimes the used netatmo API seems to have connection problems. Often a reload is enough
+
+##Things are messed up. How do I start from scratch?
+In short:
+
+* stop homebridge.
+* reset your homekit config on the phone (delete the Home in home app).
+* remove the .hombridge/persist folder
+* check the .hombridge/config file
+* start homebridge
+
+##This is cool, how can I support?
+If you like this, your welcome to give a small donation. Check button at top/bottom of page.
+If you like to join development check the sources, open issues and pull requests.
+Thanx!
 
 # Development
 
@@ -188,8 +246,11 @@ If this is not found as well, empty data is returned.
 # TODO / Next Features
 Following things are to be developed next.
 
+* static code checks
+* release management
+* recheck thermostat ranges
 * enhance support for netatmo welcome (images?, callbacks?,)
-* complete tests
+* complete tests (config, unit tests, devices)
 * add optional eve services including history data
 * recheck temperature units (Celsius - Fahrenheit)
 * support for min/max temperature
@@ -201,7 +262,6 @@ Following things are to be developed next.
 * document extended config (switch on/off devices/services)
 * fix env/tests
 * names in config
-* whitelist /blacklist
 * trigger switches (-> pushover, enigma, virtual switch for scenes -> push)
 
 ----
@@ -209,10 +269,12 @@ Following things are to be developed next.
 Is this plugin useful for you? Please buy me a beer ...
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=7ZGEPWHG5UH6S)
 
-Thank you for buying me a beer to follwing mates:
+<small>
+Thank you for buying me a beer to follwing users:
 
-* Samuel J.
-* Alexis A.
-* Sylvain D.
-* Sebastian K.
-* Frank H.
+* 2016-07-18: Samuel J.
+* 2016-09-03: Alexis A. 
+* 2016-09-16: Sylvain D. 
+* 2016-11-01: Sebastian K.
+* 2016-11-04: Frank H.
+</small>
