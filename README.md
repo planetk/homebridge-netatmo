@@ -69,6 +69,7 @@ Communication towards netatmo API is time by three parameters:
  <dd>Time in milliseconds, how often the api will be automatically polled to check for changes. Defaults to 900000 which is 15 Minutes. Do not take values much lower, or you risk, that you put to much traffic to the netatmo API. In worst case netatmo might temporarilly exclude your app from the api.</dd>
  <dt> refresh_run </dt>
  <dd>Time in milliseconds, how often the the module checks if there was a request to refresh the data, either from the automatic polling or due to changes in the homekit app. This allows to have regular checks as well as refreshes after changes were done in the app. Defaults to 20000 which is 20 Seconds.</dd>
+</dl>
 
 <pre>
 
