@@ -214,6 +214,11 @@ Thanx!
 
 # Changes
 
+## 0.2.1
+* JSHint code checks
+* Configurable API Timing
+* Changed default request ratio to 1 per 15 minutes
+
 ## 0.2.0
 * Version 0.2.0 is a complete refactoring, some config changes might be required
 * thermostat implementation is now supported in "home" App
