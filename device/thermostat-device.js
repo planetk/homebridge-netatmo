@@ -22,7 +22,7 @@ module.exports = function(pHomebridge) {
         if(!err) {
           var deviceMap = {};
           devices.forEach(function( device ) {
-            deviceMap[device["_id"]] = device;
+            deviceMap[device._id] = device;
           }.bind(this));
           this.cache.set(this.deviceType, deviceMap);
           this.deviceData = deviceMap;
@@ -39,4 +39,4 @@ module.exports = function(pHomebridge) {
 
   return ThermostatDeviceType;
 
-}
+};

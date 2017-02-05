@@ -59,4 +59,4 @@ module.exports = function(pHomebridge) {
   }
 
   return NoiseLevelService;
-}    
+};    

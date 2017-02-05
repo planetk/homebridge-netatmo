@@ -43,7 +43,7 @@ describe("Services", function() {
                 assert(acc.getService( acc.name + " Air Pressure"), "Module " + acc.netatmoType + " should have Atmospheric Pressure service");
                 assert(acc.getService(acc.name + " Noise Level"), "Module " + acc.netatmoType + " should have Noise Level service");
 
-                assert(null == acc.getService(Service.BatteryService), "Module " + acc.netatmoType + " should not have BatteryService");
+                assert(null === acc.getService(Service.BatteryService), "Module " + acc.netatmoType + " should not have BatteryService");
 
                 break;
               case "NAModule1" : // Outside module
@@ -75,7 +75,7 @@ describe("Services", function() {
 
             done();
 
-          })
+          });
         });
 
       });

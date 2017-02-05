@@ -30,7 +30,7 @@ module.exports = function(pHomebridge) {
         "name": deviceData.station_name || "Netatmo " + netatmoDevice.deviceType + " " + deviceData._id,
         "defaultServices": DEFAULT_SERVICES
 //        "dataTypes"
-      }
+      };
 
       super(homebridge, accessoryConfig, netatmoDevice);
 
@@ -81,7 +81,7 @@ module.exports = function(pHomebridge) {
 
         var setpoint = module.setpoint;
         if (setpoint) {
-          if (setpoint.setpoint_temp != undefined) {
+          if (setpoint.setpoint_temp !== undefined) {
             result.targetTemperature = setpoint.setpoint_temp;
             result.mode = setpoint.setpoint_mode;
           }
@@ -89,7 +89,7 @@ module.exports = function(pHomebridge) {
 
         if (result.targetTemperature < 10) result.targetTemperature = 10;
 
-        result.heating = (module.therm_relay_cmd != 0);
+        result.heating = (module.therm_relay_cmd !== 0);
         result.batteryPercent = module.battery_percent;
 
         result.lowBattery = false;
@@ -111,7 +111,7 @@ module.exports = function(pHomebridge) {
     }
 
     applyThermostatData(thermostatData) {
-      var dataChanged = false
+      var dataChanged = false;
 
       if(thermostatData.currentTemperature && this.currentTemperature != thermostatData.currentTemperature) {
         this.currentTemperature = thermostatData.currentTemperature;
@@ -164,7 +164,7 @@ module.exports = function(pHomebridge) {
       if (dataChanged) {
         this.getServices().forEach(
           function( svc ) {
-            svc.updateCharacteristics && svc.updateCharacteristics();
+            var call = svc.updateCharacteristics && svc.updateCharacteristics();
           }
         );
       }
@@ -185,4 +185,4 @@ module.exports = function(pHomebridge) {
   }
 
   return ThermostatAccessory;
-}
+};

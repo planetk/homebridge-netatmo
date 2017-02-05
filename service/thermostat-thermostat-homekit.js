@@ -135,5 +135,5 @@ module.exports = function(pHomebridge) {
   }
 
   return ThermostatService;
-}
+};
  

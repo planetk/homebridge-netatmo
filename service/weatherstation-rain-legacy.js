@@ -115,4 +115,4 @@ module.exports = function(pHomebridge) {
   }
 
   return RainLevelService;
-}
+};

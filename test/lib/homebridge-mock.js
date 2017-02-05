@@ -23,4 +23,4 @@ HombridgeMock.prototype.registerPlatform = function (name, title, Platform) {
   this.pluginName = name;
   this.configName = title;
   this.PlatformType = Platform;
-}
+};

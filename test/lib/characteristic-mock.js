@@ -1,3 +1,5 @@
+'use strict';
+
 function Characteristic(hap, char) {
     this.hap = hap;
     this.name = char.name;
@@ -18,7 +20,7 @@ Characteristic.Formats = {
   UINT64: 'uint64',
   DATA: 'data', // unconfirmed
   TLV8: 'tlv8'
-}
+};
 
 // Known HomeKit unit types
 Characteristic.Units = {
@@ -28,7 +30,7 @@ Characteristic.Units = {
   ARC_DEGREE: 'arcdegrees',
   LUX: 'lux',
   SECONDS: 'seconds'
-}
+};
 
 // Known HomeKit permission types
 Characteristic.Perms = {
@@ -36,27 +38,15 @@ Characteristic.Perms = {
   WRITE: 'pw',
   NOTIFY: 'ev',
   HIDDEN: 'hd'
-}
-
-
-
-
-
-
-
-
-
-
+};
 
 
 var inherits = require('util').inherits;
 var EventEmitter = require('events').EventEmitter;
 
-'use strict';
-
 module.exports = {
   Characteristic: Characteristic
-}
+};
 
 
 /**
@@ -122,7 +112,7 @@ Characteristic.Formats = {
   UINT64: 'uint64',
   DATA: 'data', // unconfirmed
   TLV8: 'tlv8'
-}
+};
 
 // Known HomeKit unit types
 Characteristic.Units = {
@@ -132,7 +122,7 @@ Characteristic.Units = {
   ARC_DEGREE: 'arcdegrees',
   LUX: 'lux',
   SECONDS: 'seconds'
-}
+};
 
 // Known HomeKit permission types
 Characteristic.Perms = {
@@ -140,7 +130,7 @@ Characteristic.Perms = {
   WRITE: 'pw',
   NOTIFY: 'ev',
   HIDDEN: 'hd'
-}
+};
 
 /**
  * Copies the given properties to our props member variable,
@@ -160,24 +150,24 @@ Characteristic.prototype.setProps = function(props) {
     if (Object.prototype.hasOwnProperty.call(props, key))
       this.props[key] = props[key];
   return this;
-}
+};
 
 Characteristic.prototype.getValue = function(callback, context) {
   if (callback)
     callback(null, this.value);
-}
+};
 
 Characteristic.prototype.setValue = function(newValue, callback, context) {
   this.value = newValue;
   if (callback) callback();
   return this; // for chaining
-}
+};
 
 Characteristic.prototype.updateValue = function(newValue, callback, context) {
   this.value = newValue;
   if (callback) callback();
   return this; // for chaining
-}
+};
 
 
 Characteristic.prototype.getDefaultValue = function() {
@@ -190,16 +180,7 @@ Characteristic.prototype.getDefaultValue = function() {
     case Characteristic.Formats.TLV8: return ""; // who knows!
     default: return this.props.minValue || 0;
   }
-}
-
-
-
-
-
-
-
-
-
+};
 
 
 module.exports = {

@@ -20,7 +20,6 @@ module.exports = function(pHomebridge) {
       super('Wind Strength', WIND_STRENGTH_CTYPE_ID);
       this.setProps({
         format: Characteristic.Formats.UINT8,
-              format: Characteristic.Formats.UINT8,
         unit: "km/h",
         minValue: 0,
         maxValue: 200,
@@ -57,7 +56,6 @@ module.exports = function(pHomebridge) {
       super('Gust Strength', GUST_STRENGTH_CTYPE_ID);
       this.setProps({
         format: Characteristic.Formats.UINT8,
-              format: Characteristic.Formats.UINT8,
         unit: "km/h",
         minValue: 0,
         maxValue: 200,
@@ -147,4 +145,4 @@ module.exports = function(pHomebridge) {
   }
 
   return WindService;
-}
+};

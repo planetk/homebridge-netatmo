@@ -2,8 +2,7 @@ var Service = require("./service-mock").Service;
 
 function Accessory() {
   this.services = [];
-  this.addService(Service.AccessoryInformation)
-
+  this.addService(Service.AccessoryInformation);
 }
 
 Accessory.prototype.addService = function(service) {
@@ -27,9 +26,7 @@ Accessory.prototype.addService = function(service) {
   
   this.services.push(service);
   return service;
-}
-
-
+};
 
 Accessory.prototype.getService = function(name) {
   for (var index in this.services) {
@@ -40,7 +37,7 @@ Accessory.prototype.getService = function(name) {
     else if (typeof name === 'function' && ((service instanceof name) || (name.UUID === service.UUID)))
       return service;
   }
-}
+};
 
 module.exports = {
   Accessory: Accessory

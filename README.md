@@ -34,7 +34,7 @@ Configuration sample:
         {
             "platform": "netatmo",
             "name": "netatmo platform",
-            "ttl": 5,
+            "ttl": 10,
             "auth": {
     	        "client_id": "XXXXX Create at https://dev.netatmo.com/",
                 "client_secret": "XXXXX Create at https://dev.netatmo.com/",
@@ -57,6 +57,39 @@ To retrieve client id and secret please follow following guide:
 ## Advanced Configuration
 
 There are some optional configuration options in the netatmo section of the config which provide finer control about what device and services to use to create accessories.
+
+### API Refresh and timings
+
+Communication towards netatmo API is time by three parameters:
+
+<dl>
+ <dt>ttl</dt>
+ <dd>Time in seconds, how long data will be kept in the internal cache. Mainly useful to avoide duplicated requests for different values from the same device. Defaults to 10 seconds if left out in config.</dd>
+ <dt>refresh_check</dt>
+ <dd>Time in milliseconds, how often the api will be automatically polled to check for changes. Defaults to 900000 which is 15 Minutes. Do not take values much lower, or you risk, that you put to much traffic to the netatmo API. In worst case netatmo might temporarilly exclude your app from the api.</dd>
+ <dt> refresh_run </dt>
+ <dd>Time in milliseconds, how often the the module checks if there was a request to refresh the data, either from the automatic polling or due to changes in the homekit app. This allows to have regular checks as well as refreshes after changes were done in the app. Defaults to 20000 which is 20 Seconds.</dd>
+
+<pre>
+
+    "platforms": [
+        {
+            "platform": "netatmo",
+            
+            ...
+            
+			  <b>"ttl": 10,
+			  "refresh_check": 900000
+			  "refresh_run": 20000</b>
+            ...
+            
+        }
+    ],
+
+</pre>
+
+
+
 
 ### Control Accessories by device type
 
@@ -121,6 +154,11 @@ If the whitelist contains at least one entry, all oter ids will be excluded.
 
 TBD (Needs description here)
 
+<!-- 
+"options_weather": {
+"device_id": "XX:XX:XX:XX:XX:XX"
+},
+-->
 
 #<a name="notes"></a> Notes on devices
 ## Weather station

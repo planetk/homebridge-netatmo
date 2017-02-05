@@ -25,7 +25,7 @@ module.exports = function(pHomebridge) {
         "firmware": deviceData.firmware || 0.0,
         "name": deviceData.name || "Netatmo " + netatmoDevice.deviceType + " " + deviceData._id,
         "defaultServices": DEFAULT_SERVICES
-      }
+      };
 
       super(homebridge, accessoryConfig, netatmoDevice);
 
@@ -70,7 +70,7 @@ module.exports = function(pHomebridge) {
             newLastEventTimeStamp = event.time;
           }
           if (event.time > this.lastEventTimeStamp) {
-            result.motionDetected = result.motionDetected || this.eventIsMotion(event)
+            result.motionDetected = result.motionDetected || this.eventIsMotion(event);
           }
         }.bind(this));
         this.lastEventTimeStamp = newLastEventTimeStamp;
@@ -93,7 +93,7 @@ module.exports = function(pHomebridge) {
     }
 
     applyHomeData(homeData) {
-      var dataChanged = false
+      var dataChanged = false;
 
       if(this.motionDetected != homeData.motionDetected) {
         this.motionDetected = homeData.motionDetected;
@@ -103,14 +103,12 @@ module.exports = function(pHomebridge) {
       if (dataChanged) {
         this.getServices().forEach(
           function( svc ) {
-            svc.updateCharacteristics && svc.updateCharacteristics();
+            var call = svc.updateCharacteristics && svc.updateCharacteristics();
           }
         );
       }
-
     }
-
   }
 
   return CameraAccessory;
-}
+};

@@ -30,7 +30,7 @@ Service.prototype.addCharacteristic = function(characteristic) {
   this.characteristics.push(characteristic);
 
   return characteristic;
-}
+};
 
 Service.prototype.addOptionalCharacteristic = function(characteristic) {
   // characteristic might be a constructor like `Characteristic.Brightness` instead of an instance
@@ -39,12 +39,12 @@ Service.prototype.addOptionalCharacteristic = function(characteristic) {
     characteristic = new characteristic();
 
   this.optionalCharacteristics.push(characteristic);
-}
+};
 
 Service.prototype.setCharacteristic = function(name, value) {
   this.getCharacteristic(name).setValue(value);
   return this; // for chaining
-}
+};
 
 Service.prototype.getCharacteristic = function(name) {
     // returns a characteristic object from the service
@@ -70,16 +70,6 @@ Service.prototype.getCharacteristic = function(name) {
     }
 };
 
-/*
-var AccessoryInformation = function() {
-  ServiceMock.call(this);
-  this.characteristics[Characteristic.Manufacturer.name] = new Characteristic.CharacteristicMock(null,Characteristic.Manufacturer);
-  this.characteristics[Characteristic.Model.name] = new Characteristic.CharacteristicMock(null,Characteristic.Model);
-  this.characteristics[Characteristic.SerialNumber.name] = new Characteristic.CharacteristicMock(null,Characteristic.SerialNumber);
-};
-inherits(AccessoryInformation, ServiceMock);
-*/
-
 module.exports = {
   Service: Service
-}
+};

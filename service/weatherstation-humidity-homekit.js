@@ -32,5 +32,5 @@ module.exports = function(pHomebridge) {
   }
 
   return HumidityService;
-}
+};
 

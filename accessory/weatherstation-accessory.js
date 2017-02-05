@@ -40,7 +40,7 @@ module.exports = function(pHomebridge) {
         "name": deviceData._name || "Netatmo " + netatmoDevice.deviceType + " " + deviceData._id,
         "defaultServices": DEFAULT_SERVICES,
         "dataTypes": dataTypes
-      }
+      };
 
       super(homebridge, accessoryConfig, netatmoDevice);
 
@@ -88,7 +88,7 @@ module.exports = function(pHomebridge) {
         NAModule2: 4360,
         NAModule3: 4000,
         NAModule4: 4560
-      }
+      };
 
       if (levels[this.netatmoType]) {
         return levels[this.netatmoType];
@@ -103,7 +103,7 @@ module.exports = function(pHomebridge) {
         NAModule2: 5590,
         NAModule3: 5500,
         NAModule4: 5640
-      }
+      };
 
       if (levels[this.netatmoType]) {
         return levels[this.netatmoType];
@@ -176,7 +176,7 @@ module.exports = function(pHomebridge) {
 		}
 
     applyWeatherData(weatherData) {
-      var dataChanged = false
+      var dataChanged = false;
 
       if(weatherData.currentTemperature && this.currentTemperature != weatherData.currentTemperature) {
         this.currentTemperature = weatherData.currentTemperature;
@@ -232,7 +232,7 @@ module.exports = function(pHomebridge) {
       if (dataChanged) {
         this.getServices().forEach(
           function( svc ) {
-            svc.updateCharacteristics && svc.updateCharacteristics();
+            var call = svc.updateCharacteristics && svc.updateCharacteristics();
           }
         );
       }
@@ -252,21 +252,21 @@ module.exports = function(pHomebridge) {
         case "co2" :
           return this.dataTypes.indexOf("CO2") > -1;
         case "battery" :
-          return this.dataTypes.indexOf("Battery") > -1;;
+          return this.dataTypes.indexOf("Battery") > -1;
         case "humidity" :
-          return this.dataTypes.indexOf("Humidity") > -1;;
+          return this.dataTypes.indexOf("Humidity") > -1;
         case "airpressure" :
-          return this.dataTypes.indexOf("Pressure") > -1;;
+          return this.dataTypes.indexOf("Pressure") > -1;
         case "noiselevel" :
-          return this.dataTypes.indexOf("Noise") > -1;;
+          return this.dataTypes.indexOf("Noise") > -1;
         case "rain" :
-          return this.dataTypes.indexOf("Rain") > -1;;
+          return this.dataTypes.indexOf("Rain") > -1;
         case "wind" :
-          return this.dataTypes.indexOf("Wind") > -1;;
+          return this.dataTypes.indexOf("Wind") > -1;
       }
       return false;
     }
 
   }
   return WeatherStationAccessory;
-}
+};

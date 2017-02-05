@@ -23,11 +23,11 @@ module.exports = function(pHomebridge) {
         if(!err) {
           var deviceMap = {};
           devices.forEach(function( device ) {
-            deviceMap[device["_id"]] = device;
-            device._name = device.station_name + " " + device.module_name
+            deviceMap[device._id] = device;
+            device._name = device.station_name + " " + device.module_name;
             if (device.modules) {
               device.modules.forEach(function( module ) {
-                module._name = device.station_name + " " + module.module_name
+                module._name = device.station_name + " " + module.module_name;
                 deviceMap[module._id] = module;
               }.bind(this));
             }
@@ -46,5 +46,5 @@ module.exports = function(pHomebridge) {
   
   return WeatherstationDeviceType;
 
-}
+};
   

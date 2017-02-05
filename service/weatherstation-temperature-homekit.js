@@ -34,10 +34,4 @@ module.exports = function(pHomebridge) {
   }
 
   return TemperatureService;
-}
-
-/*
-  if(stationData.data_type.indexOf('Temperature') > -1) {
-    services.push(this.buildTemperatureSensor(accessory, stationData));
-  }
-*/
+};

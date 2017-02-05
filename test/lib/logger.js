@@ -1,13 +1,13 @@
+'use strict';
+
 var chalk = require('chalk');
 var util = require('util');
-
-'use strict';
 
 module.exports = {
   Logger: Logger,
   setDebugEnabled: setDebugEnabled,
   _system: new Logger() // system logger, for internal use only
-}
+};
 
 var DEBUG_ENABLED = false;
 
@@ -30,24 +30,24 @@ function Logger(prefix) {
 Logger.prototype.debug = function(msg) {
   if (DEBUG_ENABLED)
     this.log.apply(this, ['debug'].concat(Array.prototype.slice.call(arguments)));
-}
+};
   
 Logger.prototype.info = function(msg) {
   this.log.apply(this, ['info'].concat(Array.prototype.slice.call(arguments)));
-}
+};
 
 Logger.prototype.warn = function(msg) {
   this.log.apply(this, ['warn'].concat(Array.prototype.slice.call(arguments)));
-}
+};
 
 Logger.prototype.error = function(msg) {
   this.log.apply(this, ['error'].concat(Array.prototype.slice.call(arguments)));
-}
+};
   
 Logger.prototype.log = function(level, msg) {
   
   msg = util.format.apply(util, Array.prototype.slice.call(arguments, 1));
-  func = console.log;
+  var func = console.log;
   
   if (level == 'debug') {
     msg = chalk.gray(msg);
@@ -70,7 +70,7 @@ Logger.prototype.log = function(level, msg) {
   msg = "[" + date.toLocaleString() + "]" + " " + msg;
 
   func(msg);
-}
+};
   
 Logger.withPrefix = function(prefix) {
 
@@ -89,4 +89,4 @@ Logger.withPrefix = function(prefix) {
   }
   
   return loggerCache[prefix];
-}
+};

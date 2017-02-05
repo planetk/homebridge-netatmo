@@ -18,8 +18,8 @@ module.exports = function(pHomebridge) {
         .on('get', this.getCarbonDioxideDetected.bind(this))
         .eventEnabled = true;
 
-      var co2LevelCharacteristic = this.getCharacteristic(Characteristic.CarbonDioxideLevel)
-                                          || this.addCharacteristic(Characteristic.CarbonDioxideLevel);
+      var co2LevelCharacteristic = this.getCharacteristic(Characteristic.CarbonDioxideLevel) ||
+                                   this.addCharacteristic(Characteristic.CarbonDioxideLevel);
 
       co2LevelCharacteristic.on('get', this.getCarbonDioxideLevel.bind(this))
                             .eventEnabled = true;
@@ -50,4 +50,4 @@ module.exports = function(pHomebridge) {
   }
 
   return CarbonDioxideService;
-}
+};

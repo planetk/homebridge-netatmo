@@ -68,4 +68,4 @@ module.exports = function(pHomebridge) {
   }
 
   return AirPressureService;
-}
+};

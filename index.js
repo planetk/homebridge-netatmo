@@ -1,16 +1,14 @@
 'use strict';
-var homebridge
+var homebridge;
 var NetatmoWeatherStationAccessory, NetatmoThermostatAccessory;
 var async = require('async');
 
 // TODO: user info auswerten (metrisch /imperial ...)
 
 module.exports = function (pHomebridge) {
-
   homebridge = pHomebridge;
-
   homebridge.registerPlatform("homebridge-netatmo", "netatmo", NetatmoPlatform);
-}
+};
 
 var netatmo = require("netatmo");
 var inherits = require('util').inherits;
@@ -28,7 +26,7 @@ class NetatmoPlatform {
       this.log.warn('CAUTION! USING FAKE NETATMO API: ' + config.mockapi);
       this.api = require("./lib/netatmo-api-mock")(config.mockapi);
     } else {
-      this.api = new netatmo(config["auth"]);
+      this.api = new netatmo(config.auth);
     }
     this.api.on("error", function (error) {
       this.log.error('ERROR - Netatmo: ' + error);

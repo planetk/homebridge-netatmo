@@ -42,4 +42,4 @@ module.exports = function(pHomebridge) {
   }
 
   return MotionSensorService;
-}
+};
