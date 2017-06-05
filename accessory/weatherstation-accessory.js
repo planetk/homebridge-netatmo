@@ -228,6 +228,14 @@ module.exports = function(pHomebridge) {
         this.gustAngle = weatherData.gustAngle;
         dataChanged = true;
       }
+      if(weatherData.batteryPercent && this.batteryPercent != weatherData.batteryPercent) {
+        this.batteryPercent = weatherData.batteryPercent;
+        dataChanged = true;
+      }
+      if(weatherData.lowBattery && this.lowBattery != weatherData.lowBattery) {
+        this.lowBattery = weatherData.lowBattery;
+        dataChanged = true;
+      }
 
       if (dataChanged) {
         this.getServices().forEach(
