@@ -126,7 +126,7 @@ module.exports = function(pHomebridge) {
       if(thermostatData.mode && this.mode != thermostatData.mode) {
         this.mode = thermostatData.mode;
         switch(this.mode) {
-          case 'hg':
+          case 'away':
             this.targetHeatingCoolingState = Characteristic.TargetHeatingCoolingState.COOL;
             break;
           case 'max':
