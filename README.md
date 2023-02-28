@@ -6,6 +6,9 @@ Like this? Please buy me a beer ...
 [downloads-image]: https://img.shields.io/npm/dm/homebridge-netatmo.svg?style=flat
 [downloads-url]: https://npmjs.org/package/homebridge-netatmo
 
+# :warning: Currently this project is no longer actively maintained. In case you are willing to maintain this project, please contact me or open an issue.
+
+
 # homebridge-netatmo
 
 This is a plugin for homebridge. It's a working implementation for several netatmo devices:
