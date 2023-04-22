@@ -25,7 +25,7 @@ module.exports = function(pHomebridge) {
     constructor(accessory) {
       super('Atmospheric Pressure', ATMOSPHERIC_PRESSURE_CTYPE_ID);
       this.setProps({
-        format: Characteristic.Formats.UINT8,
+        format: Characteristic.Formats.UINT16,
         unit: "hPA", 
         minValue: 500,
         maxValue: 2000,
